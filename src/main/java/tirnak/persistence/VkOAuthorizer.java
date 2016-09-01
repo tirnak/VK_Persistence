@@ -15,6 +15,10 @@ public class VkOAuthorizer {
     private String redirect_uri;
     private String scope;
 
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
     public String getClientSecret() {
         return clientSecret;
     }
@@ -33,17 +37,7 @@ public class VkOAuthorizer {
         scope = myResources.getString("scope");
     }
 
-    public String getQuery() {
-        if (code.isEmpty() && accessToken.isEmpty()) {
-            return getQueryForCode();
-        } else if (accessToken.isEmpty()) {
-            return getQueryForToken();
-        } else {
-            return "";
-        }
-    }
-
-    private String getQueryForCode() {
+    public String getQueryForCode() {
         return "https://oauth.vk.com/authorize?" +
                 "client_id=" + clientId + "&" +
                 "redirect_uri=" + redirect_uri + "&" +
@@ -51,11 +45,20 @@ public class VkOAuthorizer {
                 "response_type=code";
     }
 
-    private String getQueryForToken() {
+    public String getQueryForToken() {
         return "https://oauth.vk.com/access_token?" +
                 "client_id=" + clientId + "&" +
                 "client_secret=" + clientSecret + "&" +
                 "redirect_uri=" + redirect_uri + "&" +
                 "code=" + code;
+    }
+
+    public void parseCode(String location) {
+        String[] questionSeparated = location.split("\\?");
+        String[] keyValue = questionSeparated[1].split("=");
+        if (!keyValue[0].equals("code")) {
+            throw new RuntimeException("something wrong with returned code response");
+        }
+        code = keyValue[1];
     }
 }

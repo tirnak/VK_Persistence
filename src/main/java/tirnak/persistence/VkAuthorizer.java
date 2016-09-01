@@ -2,7 +2,11 @@ package tirnak.persistence;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.remote.RemoteWebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import tirnak.persistence.common.VkSeleniumGeneric;
 
 import java.util.ResourceBundle;
@@ -43,8 +47,10 @@ public class VkAuthorizer extends VkSeleniumGeneric {
         passElement.sendKeys(pass);
         driver.findElement(By.id("login_button")).click();
 
-        Thread.sleep(10000);
+//        Thread.sleep(10000);
 
+        Wait<WebDriver> wait = new WebDriverWait(driver, 5);
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.className("top_profile_name")));
         String name = driver.findElement(By.className("top_profile_name")).getText();
         driver.findElement(By.className("profile_online"));
 
