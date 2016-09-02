@@ -3,6 +3,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.springframework.social.vkontakte.api.Post;
@@ -15,8 +16,10 @@ import org.springframework.social.vkontakte.api.impl.wall.WallOwner;
 import tirnak.persistence.VkAuthorizer;
 import tirnak.persistence.VkOAuthorizer;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
 import java.util.List;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class Runner {
@@ -25,7 +28,10 @@ public class Runner {
     //Start to write our test method. It should ends with "Test"
     public static void main(String[] args) throws InterruptedException, IOException {
                 //Step 1- Driver Instantiation: Instantiate driver object as FirefoxDriver
-        WebDriver driver = new FirefoxDriver();
+
+//        FileOutputStream outputStream = new FileOutputStream("credentials.properties");
+
+
 //
 //        VkAuthorizer authorizer = new VkAuthorizer(driver);
 //        authorizer.authorize();
@@ -35,11 +41,16 @@ public class Runner {
 //
 //        //Step 5- Quit Driver
 //        driver.quit();
+        Properties properties = new Properties();
+        URL filePath = Runner.class.getResource("credentials.properties");
+        oAuthorizer = new VkOAuthorizer(properties, filePath);
 
-
-        oAuthorizer = new VkOAuthorizer();
+        System.setProperty("webdriver.gecko.driver","D:\\utils\\geckodriver.exe");
+        WebDriver driver = new FirefoxDriver();
         if (oAuthorizer.getAccessToken().isEmpty()) {
             getToken(driver);
+//            FileOutputStream outputStream = new FileOutputStream("credentials.properties");
+            oAuthorizer.persist();
         }
 
         getAlbums();
@@ -51,7 +62,13 @@ public class Runner {
         VkAuthorizer authorizer = new VkAuthorizer(driver);
         authorizer.authorize();
         String queryToGetCode = oAuthorizer.getQueryForCode();
-        driver.navigate().to(queryToGetCode);
+        try {
+            driver.navigate().to(queryToGetCode);
+        } catch (Exception suppressed) {
+            String x = "af";
+        }
+
+
         String location = driver.getCurrentUrl();
         oAuthorizer.parseCode(location);
 
@@ -70,6 +87,7 @@ public class Runner {
         List<Post> posts = vKontakteTemplate.wallOperations().getPosts();
         for (Post post: posts) {
             post.getText();
+            post.getComments();
         }
         //vKontakteTemplate.wallOperations().getPosts(0, 100);
         CommentsQuery query = new CommentsQuery.Builder(new UserWall(482616L), 6349).build();

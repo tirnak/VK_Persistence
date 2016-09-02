@@ -2,12 +2,18 @@ package tirnak.persistence;
 
 import org.springframework.social.vkontakte.api.impl.VKontakteTemplate;
 
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 /**
  * Created by kirill on 01.09.16.
  */
 public class VkOAuthorizer {
+    private URL pathToFile;
+    private Properties properties;
     private String clientId;
     private String clientSecret;
     private String accessToken;
@@ -27,14 +33,16 @@ public class VkOAuthorizer {
         return accessToken;
     }
 
-    {
-        ResourceBundle myResources = ResourceBundle.getBundle("credentials");
-        clientId = myResources.getString("client_id");
-        clientSecret = myResources.getString("client_secret");
-        accessToken = myResources.getString("access_token");
-        code = myResources.getString("code");
-        redirect_uri = myResources.getString("redirect_uri");
-        scope = myResources.getString("scope");
+    public VkOAuthorizer(Properties properties, URL pathToFile) throws IOException {
+        this.properties = properties;
+        this.pathToFile = pathToFile;
+        properties.load(pathToFile.openStream());
+        clientId = properties.getProperty("client_id");
+        clientSecret = properties.getProperty("client_secret");
+        accessToken = properties.getProperty("access_token");
+        code = properties.getProperty("code");
+        redirect_uri = properties.getProperty("redirect_uri");
+        scope = properties.getProperty("scope");
     }
 
     public String getQueryForCode() {
@@ -60,5 +68,17 @@ public class VkOAuthorizer {
             throw new RuntimeException("something wrong with returned code response");
         }
         code = keyValue[1];
+    }
+
+    public void persist() throws IOException {
+        String path = pathToFile.getPath();
+
+        properties.setProperty("client_id", clientId);
+        properties.setProperty("client_secret", clientSecret);
+        properties.setProperty("access_token", accessToken);
+        properties.setProperty("code", code);
+        properties.setProperty("redirect_uri", redirect_uri);
+        properties.setProperty("scope", scope);
+        properties.store(new FileOutputStream(path), "comment");
     }
 }
