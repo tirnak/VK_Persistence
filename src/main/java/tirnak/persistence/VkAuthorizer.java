@@ -11,9 +11,6 @@ import tirnak.persistence.common.VkSeleniumGeneric;
 
 import java.util.ResourceBundle;
 
-/**
- * Created by kise0116 on 31.08.2016.
- */
 public class VkAuthorizer extends VkSeleniumGeneric {
 
     public VkAuthorizer(WebDriver driver) {
