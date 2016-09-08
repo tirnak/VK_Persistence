@@ -43,9 +43,6 @@ public class VkAuthorizer extends VkSeleniumGeneric {
         emailElement.sendKeys(email);
         passElement.sendKeys(pass);
         driver.findElement(By.id("login_button")).click();
-
-//        Thread.sleep(10000);
-
         Wait<WebDriver> wait = new WebDriverWait(driver, 5);
         wait.until(ExpectedConditions.presenceOfElementLocated(By.className("top_profile_name")));
         String name = driver.findElement(By.className("top_profile_name")).getText();

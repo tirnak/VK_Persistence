@@ -15,6 +15,7 @@ import org.springframework.social.vkontakte.api.impl.wall.UserWall;
 import org.springframework.social.vkontakte.api.impl.wall.WallOwner;
 import tirnak.persistence.VkAuthorizer;
 import tirnak.persistence.VkOAuthorizer;
+import tirnak.persistence.WallExtractor;
 
 import java.io.*;
 import java.net.URL;
@@ -25,6 +26,8 @@ import java.util.ResourceBundle;
 public class Runner {
 
     static VkOAuthorizer oAuthorizer;
+    static VKontakteTemplate vKontakteTemplate;
+
     //Start to write our test method. It should ends with "Test"
     public static void main(String[] args) throws InterruptedException, IOException {
                 //Step 1- Driver Instantiation: Instantiate driver object as FirefoxDriver
@@ -33,8 +36,7 @@ public class Runner {
 
 
 //
-//        VkAuthorizer authorizer = new VkAuthorizer(driver);
-//        authorizer.authorize();
+
 //
 //        //Step 4- Close Driver
 //        driver.close();
@@ -47,20 +49,27 @@ public class Runner {
 
         System.setProperty("webdriver.gecko.driver","D:\\utils\\geckodriver.exe");
         WebDriver driver = new FirefoxDriver();
+
+        VkAuthorizer authorizer = new VkAuthorizer(driver);
+        authorizer.authorize();
+
         if (oAuthorizer.getAccessToken().isEmpty()) {
             getToken(driver);
 //            FileOutputStream outputStream = new FileOutputStream("credentials.properties");
             oAuthorizer.persist();
         }
 
-        getAlbums();
+        vKontakteTemplate = new VKontakteTemplate(oAuthorizer.getAccessToken(), oAuthorizer.getClientSecret());
+        long userId = vKontakteTemplate.usersOperations().getUser().getId();
+        WallExtractor wallExtractor = new WallExtractor(driver, userId);
+        wallExtractor.goToWall();
+        wallExtractor.scrollToEnd();
 //            makeFriendsRequest();
 
     }
 
     public static void getToken(WebDriver driver) throws IOException {
-        VkAuthorizer authorizer = new VkAuthorizer(driver);
-        authorizer.authorize();
+
         String queryToGetCode = oAuthorizer.getQueryForCode();
         try {
             driver.navigate().to(queryToGetCode);
