@@ -51,25 +51,14 @@
             <version>1.1.4.RELEASE</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <version>10.8.2.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derbyclient</artifactId>
-            <version>10.8.2.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.192</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-            <version>3.5.6-Final</version>
-            <type>jar</type>
-            <scope>compile</scope>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.2.2.Final</version>
         </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>

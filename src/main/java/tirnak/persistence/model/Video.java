@@ -6,7 +6,9 @@ import javax.persistence.*;
 @Table(name="video")
 public class Video {
     @Id
-    @GeneratedValue
-    @Column(name = "post_id")
+    @Column(name = "video_id")
     private int id;
+    @OneToMany
+    @JoinColumn(name="post_id")
+    private Post post;
 }

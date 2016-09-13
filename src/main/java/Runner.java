@@ -28,21 +28,8 @@ public class Runner {
     static VkOAuthorizer oAuthorizer;
     static VKontakteTemplate vKontakteTemplate;
 
-    //Start to write our test method. It should ends with "Test"
     public static void main(String[] args) throws InterruptedException, IOException {
-                //Step 1- Driver Instantiation: Instantiate driver object as FirefoxDriver
 
-//        FileOutputStream outputStream = new FileOutputStream("credentials.properties");
-
-
-//
-
-//
-//        //Step 4- Close Driver
-//        driver.close();
-//
-//        //Step 5- Quit Driver
-//        driver.quit();
         Properties properties = new Properties();
         URL filePath = Runner.class.getResource("credentials.properties");
         oAuthorizer = new VkOAuthorizer(properties, filePath);
@@ -55,7 +42,6 @@ public class Runner {
 
         if (oAuthorizer.getAccessToken().isEmpty()) {
             getToken(driver);
-//            FileOutputStream outputStream = new FileOutputStream("credentials.properties");
             oAuthorizer.persist();
         }
 
@@ -63,7 +49,7 @@ public class Runner {
         long userId = vKontakteTemplate.usersOperations().getUser().getId();
         WallExtractor wallExtractor = new WallExtractor(driver, userId);
         wallExtractor.goToWall();
-        wallExtractor.scrollToEnd();
+//        Thread.sleep();
 //            makeFriendsRequest();
 
     }
@@ -71,13 +57,7 @@ public class Runner {
     public static void getToken(WebDriver driver) throws IOException {
 
         String queryToGetCode = oAuthorizer.getQueryForCode();
-        try {
-            driver.navigate().to(queryToGetCode);
-        } catch (Exception suppressed) {
-            String x = "af";
-        }
-
-
+        driver.navigate().to(queryToGetCode);
         String location = driver.getCurrentUrl();
         oAuthorizer.parseCode(location);
 
@@ -87,10 +67,9 @@ public class Runner {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode actualObj = mapper.readTree(tokenResponse);
         oAuthorizer.setAccessToken(actualObj.get("access_token").textValue());
-
     }
 
-    public static void getAlbums() {
+    public static void getPostsByApi() {
 
         VKontakteTemplate vKontakteTemplate = new VKontakteTemplate(oAuthorizer.getAccessToken(), oAuthorizer.getClientSecret());
         List<Post> posts = vKontakteTemplate.wallOperations().getPosts();
@@ -98,13 +77,8 @@ public class Runner {
             post.getText();
             post.getComments();
         }
-        //vKontakteTemplate.wallOperations().getPosts(0, 100);
         CommentsQuery query = new CommentsQuery.Builder(new UserWall(482616L), 6349).build();
         vKontakteTemplate.wallOperations().getComments(query);
-//        VKArray<VKontakteProfile> array = vKontakteTemplate.friendsOperations().get();
-//        for (VKontakteProfile profile : array.getItems()) {
-//            System.out.println(profile.getBirthDate().getDay());
-//        }
     }
 
     public static void makeFriendsRequest() {
