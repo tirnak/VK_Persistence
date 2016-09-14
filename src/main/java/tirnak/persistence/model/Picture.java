@@ -5,9 +5,11 @@ import javax.persistence.*;
 @Entity
 @Table(name="picture")
 public class Picture {
+
     @Id
     @Column(name = "picture_id")
     private int id;
+
     @ManyToOne
     @JoinColumn(name="post_id")
     private Post post;
