@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,34 +17,11 @@ public class PostTest {
     private SessionFactory sessionFactory;
 
     {
-        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                .configure() // configures settings from hibernate.cfg.xml
-                .build();
-        try {
-            sessionFactory = new MetadataSources( registry ).buildMetadata().buildSessionFactory();
-            System.out.println(sessionFactory);
-        }
-        catch (Exception e) {
-            // The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
-            // so destroy it manually.
-            StandardServiceRegistryBuilder.destroy( registry );
-        }
     }
 
     @Before
     public void setUp() throws Exception {
-        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                .configure() // configures settings from hibernate.cfg.xml
-                .build();
-        try {
-            sessionFactory = new MetadataSources( registry ).buildMetadata().buildSessionFactory();
-        }
-        catch (Exception e) {
-            // The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
-            // so destroy it manually.
-            StandardServiceRegistryBuilder.destroy( registry );
-        }
-
+        sessionFactory = new Configuration().configure().buildSessionFactory();
     }
 
     @Test
@@ -53,22 +31,19 @@ public class PostTest {
         session.beginTransaction();
         Picture picture = new Picture();
         picture.setId(1);
-        picture.setPost(new Post());
+        Post post = new Post();
+        post.setId(1);
+        picture.setPost(post);
+        session.save(post);
         session.save(picture);
         session.getTransaction().commit();
         session.close();
 
-        Picture picture1;
         session = sessionFactory.openSession();
         session.beginTransaction();
-        List result = session.createQuery( "from picture" ).list();
-        for ( Picture pic : (List<Picture>) result ) {
-            System.out.println(pic.getId());
-            System.out.println(pic.getPost());
-        }
-        session.getTransaction().commit();
-
-
-
+        List result = session.createQuery("from Picture").list();
+        Picture picture1 = (Picture) result.get(0);
+        assertTrue(picture1.getId() == 1);
+        assertTrue(picture1.getPost().getId() == 1);
     }
 }

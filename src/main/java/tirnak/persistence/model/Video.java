@@ -8,7 +8,7 @@ public class Video {
     @Id
     @Column(name = "video_id")
     private int id;
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name="post_id")
     private Post post;
 }

@@ -11,7 +11,7 @@ public class Person {
     private int id;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "like", joinColumns = {@JoinColumn(name = "person_id")},
-            inverseJoinColumns = { @JoinColumn(name = "post_id")})
+    @JoinTable(name = "like", joinColumns = {@JoinColumn(name = "post_id")},
+            inverseJoinColumns = { @JoinColumn(name = "person_id")})
     public Set<Post> likes;
 }
