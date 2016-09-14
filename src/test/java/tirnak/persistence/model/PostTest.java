@@ -46,4 +46,24 @@ public class PostTest {
         assertTrue(picture1.getId() == 1);
         assertTrue(picture1.getPost().getId() == 1);
     }
+
+    @Test
+    public void testLike() throws Exception{
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        Post post = new Post(); post.setId(10); session.save(post);
+        Person person = new Person(); person.setId(11); session.save(person);
+        post.addLikedBy(person); //person.addLike(post);
+        session.getTransaction().commit();
+        session.close();
+
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        List result = session.createQuery("from Post ").list();
+        Post post1 = (Post) result.get(0);
+        assertTrue(post1.getId() == 10);
+        for (Person person1 : post1.getLikedBy()) {
+            assertTrue(person1.getId() == 11);
+        }
+    }
 }

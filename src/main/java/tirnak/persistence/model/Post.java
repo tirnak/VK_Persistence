@@ -5,6 +5,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,10 +41,9 @@ public class Post {
     @OneToMany(mappedBy = "parent")
     private List<Post> comments;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "like", joinColumns = {@JoinColumn(name = "person_id")},
-        inverseJoinColumns = { @JoinColumn(name = "post_id",
-                    nullable = false, updatable = false) })
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "vk_like", joinColumns = {@JoinColumn(name = "post_id", referencedColumnName = "post_id")},
+        inverseJoinColumns = { @JoinColumn(name = "person_id", referencedColumnName = "person_id")})
     public Set<Person> likedBy;
 
     public int getId() {
@@ -106,8 +106,11 @@ public class Post {
         return likedBy;
     }
 
-    public void setLikedBy(Set<Person> likedBy) {
-        this.likedBy = likedBy;
+    public void addLikedBy(Person personLiked) {
+        if (likedBy == null) {
+            likedBy = new HashSet<Person>();
+        }
+        likedBy.add(personLiked);
     }
 
     @Override
