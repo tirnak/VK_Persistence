@@ -8,7 +8,7 @@ public class Picture {
     @Id
     @Column(name = "picture_id")
     private int id;
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name="post_id")
     private Post post;
 

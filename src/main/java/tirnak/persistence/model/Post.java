@@ -26,7 +26,7 @@ public class Post {
     @JoinColumn(name="repost_of")
     private Post repostOf;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name="person_id")
     private Person author;
 
@@ -35,7 +35,7 @@ public class Post {
     @JoinColumn(name="parent_id")
     private Post parentId;
 
-    @OneToMany(mappedBy = "post_id")
+    @OneToMany(mappedBy = "parent_id")
     private List<Post> comments;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

@@ -2,9 +2,9 @@ package tirnak.persistence.model;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
+import org.hibernate.service.ServiceRegistryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,43 +13,29 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class PostTest {
-    private SessionFactory sessionFactory;
+    private SessionFactory factory;
 
     {
-        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                .configure() // configures settings from hibernate.cfg.xml
-                .build();
-        try {
-            sessionFactory = new MetadataSources( registry ).buildMetadata().buildSessionFactory();
-            System.out.println(sessionFactory);
-        }
-        catch (Exception e) {
-            // The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
-            // so destroy it manually.
-            StandardServiceRegistryBuilder.destroy( registry );
-        }
+        Configuration configuration = new Configuration();
+        configuration.configure();
+        configuration.addAnnotatedClass(Post.class);
+        configuration.addAnnotatedClass(Picture.class);
+        configuration.addAnnotatedClass(Person.class);
+        configuration.addAnnotatedClass(Video.class);
+        ServiceRegistryBuilder srBuilder = new ServiceRegistryBuilder();
+        srBuilder.applySettings(configuration.getProperties());
+        ServiceRegistry serviceRegistry = srBuilder.buildServiceRegistry();
+        factory = configuration.buildSessionFactory(serviceRegistry);
     }
 
     @Before
     public void setUp() throws Exception {
-        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                .configure() // configures settings from hibernate.cfg.xml
-                .build();
-        try {
-            sessionFactory = new MetadataSources( registry ).buildMetadata().buildSessionFactory();
-        }
-        catch (Exception e) {
-            // The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
-            // so destroy it manually.
-            StandardServiceRegistryBuilder.destroy( registry );
-        }
-
     }
 
     @Test
     public void testPicture() throws Exception {
 
-        Session session = sessionFactory.openSession();
+        Session session = factory.openSession();
         session.beginTransaction();
         Picture picture = new Picture();
         picture.setId(1);
@@ -59,7 +45,7 @@ public class PostTest {
         session.close();
 
         Picture picture1;
-        session = sessionFactory.openSession();
+        session = factory.openSession();
         session.beginTransaction();
         List result = session.createQuery( "from picture" ).list();
         for ( Picture pic : (List<Picture>) result ) {
