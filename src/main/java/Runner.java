@@ -1,27 +1,23 @@
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.RemoteWebElement;
 import org.springframework.social.vkontakte.api.Post;
 import org.springframework.social.vkontakte.api.VKontakteProfile;
 import org.springframework.social.vkontakte.api.impl.VKontakteTemplate;
 import org.springframework.social.vkontakte.api.impl.json.VKArray;
 import org.springframework.social.vkontakte.api.impl.wall.CommentsQuery;
 import org.springframework.social.vkontakte.api.impl.wall.UserWall;
-import org.springframework.social.vkontakte.api.impl.wall.WallOwner;
 import tirnak.persistence.VkAuthorizer;
+import tirnak.persistence.VkImageSaver;
 import tirnak.persistence.VkOAuthorizer;
 import tirnak.persistence.WallExtractor;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Properties;
-import java.util.ResourceBundle;
 
 public class Runner {
 
@@ -49,7 +45,10 @@ public class Runner {
         long userId = vKontakteTemplate.usersOperations().getUser().getId();
         WallExtractor wallExtractor = new WallExtractor(driver, userId);
         wallExtractor.goToWall();
-//        Thread.sleep();
+        VkImageSaver imageSaver = new VkImageSaver(driver, ".", userId);
+        imageSaver.saveImagesWithMe();
+//        imageSaver.saveImage();
+        Thread.sleep(1000);
 //            makeFriendsRequest();
 
     }
@@ -57,7 +56,12 @@ public class Runner {
     public static void getToken(WebDriver driver) throws IOException {
 
         String queryToGetCode = oAuthorizer.getQueryForCode();
-        driver.navigate().to(queryToGetCode);
+        try {
+            driver.navigate().to(queryToGetCode);
+        } catch (Exception e) {
+            System.out.println(e.getClass().getCanonicalName());
+            System.out.println(e.getCause().getClass().getCanonicalName());
+        }
         String location = driver.getCurrentUrl();
         oAuthorizer.parseCode(location);
 

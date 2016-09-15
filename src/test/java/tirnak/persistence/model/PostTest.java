@@ -9,7 +9,9 @@ import org.hibernate.cfg.Configuration;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import static org.junit.Assert.*;
 
@@ -48,7 +50,7 @@ public class PostTest {
     }
 
     @Test
-    public void testLike() throws Exception{
+    public void testLike() throws Exception {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         Post post = new Post(); post.setId(10); session.save(post);
@@ -65,5 +67,45 @@ public class PostTest {
         for (Person person1 : post1.getLikedBy()) {
             assertTrue(person1.getId() == 11);
         }
+    }
+
+    @Test
+    public void testPostHierarchy() throws Exception {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        List<Post> posts = new ArrayList<Post>();
+        for (int i = 0; i < 5; i++) {
+            posts.add(new Post());
+            posts.get(i).setId(i);
+            if (i > 0) {
+                posts.get(i).setParent(posts.get(i - 1));
+            }
+            if (i > 0) {
+                posts.get(i).setRepostOf(posts.get(i - 1));
+            }
+            session.save(posts.get(i));
+        }
+
+        session.getTransaction().commit();
+        session.close();
+
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        Function<Post, Post> getParent = p -> p.getParent();
+        Function<Post, Post> getRepostOf = p -> p.getRepostOf();
+        Post post = session.get(Post.class, 4);
+        _testHierarchy(getParent, post);
+        // test repost
+        post = session.get(Post.class, 4);
+        _testHierarchy(getRepostOf, post);
+    }
+
+    private void _testHierarchy(Function<Post,Post> f, Post initial) {
+        assertNotNull(f.apply(initial));
+        for (int i = 0; i < 4; i++) {
+            assertNotNull(f.apply(initial));
+            initial = f.apply(initial); // 3, 2, 1, 0
+        }
+        assertNull(f.apply(initial));
     }
 }

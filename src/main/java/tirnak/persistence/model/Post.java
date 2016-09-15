@@ -119,11 +119,9 @@ public class Post {
                 "id=" + id +
                 ", date=" + date +
                 ", text='" + text + '\'' +
-                ", repostOf=" + repostOf +
+                (repostOf != null ? ", repostOf=" +  repostOf.getId() : "") +
                 ", author=" + author +
-                ", parent=" + parent +
-                ", comments=" + comments +
-                ", likedBy=" + likedBy +
+                (parent != null ? ", parent=" + parent : "") +
                 '}';
     }
 }
