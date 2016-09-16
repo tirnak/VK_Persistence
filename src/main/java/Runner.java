@@ -2,6 +2,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.social.vkontakte.api.Post;
 import org.springframework.social.vkontakte.api.VKontakteProfile;
@@ -46,8 +47,7 @@ public class Runner {
         WallExtractor wallExtractor = new WallExtractor(driver, userId);
         wallExtractor.goToWall();
         VkImageSaver imageSaver = new VkImageSaver(driver, ".", userId);
-        imageSaver.saveImagesWithMe();
-//        imageSaver.saveImage();
+//        imageSaver.saveImagesWithMe();
         Thread.sleep(1000);
 //            makeFriendsRequest();
 
@@ -58,9 +58,8 @@ public class Runner {
         String queryToGetCode = oAuthorizer.getQueryForCode();
         try {
             driver.navigate().to(queryToGetCode);
-        } catch (Exception e) {
-            System.out.println(e.getClass().getCanonicalName());
-            System.out.println(e.getCause().getClass().getCanonicalName());
+        } catch (WebDriverException e) {
+            System.out.println("page is a lie. Exception is quite normal");
         }
         String location = driver.getCurrentUrl();
         oAuthorizer.parseCode(location);
