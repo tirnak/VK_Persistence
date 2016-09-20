@@ -8,23 +8,29 @@ import java.util.Set;
 @Table(name="person")
 public class Person {
     @Id
-    @Column(name = "person_id")
-    private int id;
+    @Column(name = "person_href")
+    private String href;
 
-//    @ManyToMany(cascade = CascadeType.ALL)
-//    @JoinTable(name = "like", joinColumns = {@JoinColumn(name = "person_id")},
-//            inverseJoinColumns = { @JoinColumn(name = "post_id")})
+
+    @Column(name = "full_name")
+    private String fullName;
+
     @ManyToMany(cascade=CascadeType.ALL, mappedBy="likedBy", targetEntity = Post.class)
     public Set<Post> likes;
 
-    public int getId() {
-        return id;
+    public String getHref() {
+        return href;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setHref(String href) {
+        this.href = href;
     }
-
+    public String getFullName() {
+        return fullName;
+    }
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
     public void addLike(Post tolike) {
         if (likes == null) {
             likes = new HashSet<Post>();

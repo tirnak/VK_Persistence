@@ -4,10 +4,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name="post")
@@ -15,7 +12,6 @@ public class Post {
 
     @Id
     @Column(name = "post_id")
-
     private int id;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -40,6 +36,9 @@ public class Post {
 
     @OneToMany(mappedBy = "parent")
     private List<Post> comments;
+
+    @OneToMany(mappedBy = "post")
+    private List<Audio> audios;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "vk_like", joinColumns = {@JoinColumn(name = "post_id", referencedColumnName = "post_id")},
@@ -111,6 +110,13 @@ public class Post {
             likedBy = new HashSet<Person>();
         }
         likedBy.add(personLiked);
+    }
+
+    public void addAudio(Audio audio) {
+        if (audios == null) {
+            audios = new ArrayList<>();
+        }
+        audios.add(audio);
     }
 
     @Override

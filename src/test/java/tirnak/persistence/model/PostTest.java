@@ -54,7 +54,7 @@ public class PostTest {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         Post post = new Post(); post.setId(10); session.save(post);
-        Person person = new Person(); person.setId(11); session.save(person);
+        Person person = new Person(); person.setHref("11"); session.save(person);
         post.addLikedBy(person); //person.addLike(post);
         session.getTransaction().commit();
         session.close();
@@ -65,7 +65,7 @@ public class PostTest {
         Post post1 = (Post) result.get(0);
         assertTrue(post1.getId() == 10);
         for (Person person1 : post1.getLikedBy()) {
-            assertTrue(person1.getId() == 11);
+            assertTrue(person1.getHref().equals("11"));
         }
     }
 

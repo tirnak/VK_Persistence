@@ -16,6 +16,7 @@
         <mapping class="tirnak.persistence.model.Picture" />
         <mapping class="tirnak.persistence.model.Post" />
         <mapping class="tirnak.persistence.model.Video" />
+        <mapping class="tirnak.persistence.model.Audio" />
     </session-factory>
 </hibernate-configuration>
 
