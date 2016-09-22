@@ -14,9 +14,8 @@ public class Post {
     @Column(name = "post_id")
     private int id;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date")
-    private Date date;
+    private String date;
 
     @Column(name = "text")
     private String text;
@@ -53,11 +52,11 @@ public class Post {
         this.id = id;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

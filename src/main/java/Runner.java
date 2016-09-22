@@ -3,8 +3,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.springframework.social.vkontakte.api.Post;
 import org.springframework.social.vkontakte.api.VKontakteProfile;
 import org.springframework.social.vkontakte.api.impl.VKontakteTemplate;
 import org.springframework.social.vkontakte.api.impl.json.VKArray;
@@ -14,6 +14,7 @@ import tirnak.persistence.VkAuthorizer;
 import tirnak.persistence.VkImageSaver;
 import tirnak.persistence.VkOAuthorizer;
 import tirnak.persistence.WallExtractor;
+import tirnak.persistence.model.Post;
 
 import java.io.IOException;
 import java.net.URL;
@@ -47,6 +48,9 @@ public class Runner {
         WallExtractor wallExtractor = new WallExtractor(driver, userId);
         wallExtractor.goToWall();
         VkImageSaver imageSaver = new VkImageSaver(driver, ".", userId);
+        WebElement postDiv = wallExtractor.getPostDivs().get(0);
+        Post post = wallExtractor.parsePost(postDiv);
+//        wallExtractor.parsePost();
 //        imageSaver.saveImagesWithMe();
         Thread.sleep(1000);
 //            makeFriendsRequest();
@@ -74,14 +78,14 @@ public class Runner {
 
     public static void getPostsByApi() {
 
-        VKontakteTemplate vKontakteTemplate = new VKontakteTemplate(oAuthorizer.getAccessToken(), oAuthorizer.getClientSecret());
-        List<Post> posts = vKontakteTemplate.wallOperations().getPosts();
-        for (Post post: posts) {
-            post.getText();
-            post.getComments();
-        }
-        CommentsQuery query = new CommentsQuery.Builder(new UserWall(482616L), 6349).build();
-        vKontakteTemplate.wallOperations().getComments(query);
+//        VKontakteTemplate vKontakteTemplate = new VKontakteTemplate(oAuthorizer.getAccessToken(), oAuthorizer.getClientSecret());
+//        List<Post> posts = vKontakteTemplate.wallOperations().getPosts();
+//        for (Post post: posts) {
+//            post.getText();
+//            post.getComments();
+//        }
+//        CommentsQuery query = new CommentsQuery.Builder(new UserWall(482616L), 6349).build();
+//        vKontakteTemplate.wallOperations().getComments(query);
     }
 
     public static void makeFriendsRequest() {
