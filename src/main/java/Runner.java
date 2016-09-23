@@ -48,8 +48,10 @@ public class Runner {
         WallExtractor wallExtractor = new WallExtractor(driver, userId);
         wallExtractor.goToWall();
         VkImageSaver imageSaver = new VkImageSaver(driver, ".", userId);
-        WebElement postDiv = wallExtractor.getPostDivs().get(0);
-        Post post = wallExtractor.parsePost(postDiv);
+        WebElement postDiv1 = wallExtractor.getPostDivs().get(0);
+        WebElement repostDiv1 = wallExtractor.getRepostDivs(postDiv1);
+        WebElement postDiv2 = wallExtractor.getPostDivs().get(1);
+        Post post = wallExtractor.parsePost(postDiv1);
 //        wallExtractor.parsePost();
 //        imageSaver.saveImagesWithMe();
         Thread.sleep(1000);
