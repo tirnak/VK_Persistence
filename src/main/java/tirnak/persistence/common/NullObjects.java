@@ -2,6 +2,7 @@ package tirnak.persistence.common;
 
 import com.google.common.collect.ImmutableSet;
 
+import java.util.Optional;
 import java.util.Set;
 
 public class NullObjects {
@@ -19,5 +20,9 @@ public class NullObjects {
 
     public static String getEmptyString() {
         return EMPTY_STRING;
+    }
+
+    public static String wrapString(String nullable) {
+        return Optional.ofNullable(nullable).orElse("");
     }
 }

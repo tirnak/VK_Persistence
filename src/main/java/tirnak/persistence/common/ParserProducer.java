@@ -3,10 +3,10 @@ package tirnak.persistence.common;
 import org.openqa.selenium.WebElement;
 import tirnak.persistence.model.Post;
 
-import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
-public interface Parsable {
+public interface ParserProducer {
     Predicate<WebElement> getPredicateIfAppropriateDom();
-    BiConsumer<WebElement, Post> getFunctionForParsing();
+    BiFunction<WebElement, Post, Post> getFunctionForParsing();
 }

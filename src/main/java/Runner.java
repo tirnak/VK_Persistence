@@ -8,17 +8,16 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.social.vkontakte.api.VKontakteProfile;
 import org.springframework.social.vkontakte.api.impl.VKontakteTemplate;
 import org.springframework.social.vkontakte.api.impl.json.VKArray;
-import org.springframework.social.vkontakte.api.impl.wall.CommentsQuery;
-import org.springframework.social.vkontakte.api.impl.wall.UserWall;
 import tirnak.persistence.VkAuthorizer;
 import tirnak.persistence.VkImageSaver;
 import tirnak.persistence.VkOAuthorizer;
 import tirnak.persistence.WallExtractor;
+import tirnak.persistence.common.DomIterator;
 import tirnak.persistence.model.Post;
+import tirnak.persistence.parser.ParserContainer;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.Properties;
 
 public class Runner {
@@ -45,13 +44,14 @@ public class Runner {
 
         vKontakteTemplate = new VKontakteTemplate(oAuthorizer.getAccessToken(), oAuthorizer.getClientSecret());
         long userId = vKontakteTemplate.usersOperations().getUser().getId();
-        WallExtractor wallExtractor = new WallExtractor(driver, userId);
+        DomIterator domIterator = new DomIterator(new ParserContainer());
+        WallExtractor wallExtractor = new WallExtractor(domIterator, driver, userId);
         wallExtractor.goToWall();
         VkImageSaver imageSaver = new VkImageSaver(driver, ".", userId);
         WebElement postDiv1 = wallExtractor.getPostDivs().get(0);
-        WebElement repostDiv1 = wallExtractor.getRepostDivs(postDiv1);
+        Post post1 = wallExtractor.parsePost(postDiv1);
         WebElement postDiv2 = wallExtractor.getPostDivs().get(1);
-        Post post = wallExtractor.parsePost(postDiv1);
+        Post post2 = wallExtractor.parsePost(postDiv2);
 //        wallExtractor.parsePost();
 //        imageSaver.saveImagesWithMe();
         Thread.sleep(1000);

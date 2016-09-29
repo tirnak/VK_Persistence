@@ -1,13 +1,8 @@
 package tirnak.persistence.model;
 
-import org.openqa.selenium.WebElement;
-import tirnak.persistence.common.Parsable;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
 
 @Entity
 @Table(name="person")

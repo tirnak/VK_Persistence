@@ -3,27 +3,24 @@ package tirnak.persistence.common;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import tirnak.persistence.model.Post;
+import tirnak.persistence.parser.ParserContainer;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
+import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class DomIterator {
     private static String GET_CHILDRER_XPATH = "./*";
-    Map<Predicate<WebElement>, BiConsumer<WebElement, Post>> checkingFunctions;
+    private ParserContainer parserContainer;
 
-    public DomIterator(Map<Predicate<WebElement>, BiConsumer<WebElement, Post>> checkingFunctions) {
-        this.checkingFunctions = checkingFunctions;
+    public DomIterator(ParserContainer parserContainer) {
+        this.parserContainer = parserContainer;
     }
 
     public void visit(WebElement el, Post post) {
-        for (Predicate<WebElement> predicate : checkingFunctions.keySet()) {
-            if (predicate.test(el)) {
-                checkingFunctions.get(predicate).accept(el, post);
-            }
+        Optional<BiFunction<WebElement, Post, Post>> parsingFunciton = parserContainer.getFunctionForWebElement(el);
+        if (parsingFunciton.isPresent()) {
+            post = parsingFunciton.get().apply(el, post);
         }
         for (WebElement child : getChildren(el)) {
             visit(child, post);
