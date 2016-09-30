@@ -5,6 +5,8 @@ import org.openqa.selenium.WebElement;
 import tirnak.persistence.model.Post;
 import tirnak.persistence.parser.ParserContainer;
 
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -18,11 +20,13 @@ public class DomIterator {
     }
 
     public void visit(WebElement el, Post post) {
-        Optional<BiFunction<WebElement, Post, Post>> parsingFunciton = parserContainer.getFunctionForWebElement(el);
-        if (parsingFunciton.isPresent()) {
-            post = parsingFunciton.get().apply(el, post);
+        Optional<BiFunction<WebElement, Post, Post>> parsingFunction = parserContainer.getFunctionForWebElement(el);
+        if (parsingFunction.isPresent()) {
+            post = parsingFunction.get().apply(el, post);
         }
-        for (WebElement child : getChildren(el)) {
+        List<WebElement> children = getChildren(el);
+        Collections.reverse(children);
+        for (WebElement child : children) {
             visit(child, post);
         }
     }

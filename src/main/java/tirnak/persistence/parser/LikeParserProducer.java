@@ -21,7 +21,7 @@ public class LikeParserProducer implements ParserProducer {
 
     @Override
     public Predicate<WebElement> getPredicateIfAppropriateDom() {
-        return el -> wrapString(el.getAttribute("class")).contains(LIKE_CLASS);
+        return el -> wrapString(el.getAttribute("class")).equalsIgnoreCase(LIKE_CLASS);
     }
 
     private static final String LIKE_CLASS = "like_tt_owner";
@@ -29,13 +29,11 @@ public class LikeParserProducer implements ParserProducer {
     @Override
     public BiFunction<WebElement, Post, Post> getFunctionForParsing() {
         return (el, post) -> {
-            el.findElements(By.className(LIKE_CLASS)).stream().forEach(subEl -> {
-                Person person = new Person();
-                person.setHref(subEl.getAttribute("href"));
-                person.setFullName(subEl.getAttribute("title"));
-                person.addLike(post);
-                post.addLikedBy(person);
-            });
+            Person person = new Person();
+            person.setHref(el.getAttribute("href"));
+            person.setFullName(el.getAttribute("title"));
+            person.addLike(post);
+            post.addLikedBy(person);
             return post;
         };
     }

@@ -8,19 +8,15 @@ public class Picture {
 
     @Id
     @Column(name = "picture_id")
-    private int id;
+    private String id;
 
     @ManyToOne
     @JoinColumn(name="post_id")
     private Post post;
 
-    public int getId() {
-        return id;
-    }
+    @Column(name="url")
+    private String href;
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public Post getPost() {
         return post;
@@ -28,5 +24,21 @@ public class Picture {
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+    public String getHref() {
+        return href;
+    }
+
+    public void setHref(String href) {
+        this.href = href;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -39,6 +39,9 @@ public class Post {
     @OneToMany(mappedBy = "post")
     private List<Audio> audios;
 
+    @OneToMany(mappedBy = "post")
+    private List<Picture> images;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "vk_like", joinColumns = {@JoinColumn(name = "post_id", referencedColumnName = "post_id")},
         inverseJoinColumns = { @JoinColumn(name = "person_id", referencedColumnName = "person_id")})
@@ -106,7 +109,7 @@ public class Post {
 
     public void addLikedBy(Person personLiked) {
         if (likedBy == null) {
-            likedBy = new HashSet<Person>();
+            likedBy = new HashSet<>();
         }
         likedBy.add(personLiked);
     }
@@ -116,6 +119,13 @@ public class Post {
             audios = new ArrayList<>();
         }
         audios.add(audio);
+    }
+
+    public void addImage(Picture picture) {
+        if (images == null) {
+            images = new ArrayList<>();
+        }
+        images.add(picture);
     }
 
     @Override

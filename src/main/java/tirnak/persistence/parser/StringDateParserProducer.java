@@ -32,7 +32,7 @@ public class StringDateParserProducer implements ParserProducer {
     @Override
     public BiFunction<WebElement, Post, Post> getFunctionForParsing() {
         return (el, post) -> {
-            post.setDate("adsfgasdf");
+            post.setDate(el.getText());
             return post;
         };
     }

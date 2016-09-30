@@ -32,7 +32,7 @@ public class PostTest {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         Picture picture = new Picture();
-        picture.setId(1);
+        picture.setId("1");
         Post post = new Post();
         post.setId(1);
         picture.setPost(post);
@@ -45,7 +45,7 @@ public class PostTest {
         session.beginTransaction();
         List result = session.createQuery("from Picture").list();
         Picture picture1 = (Picture) result.get(0);
-        assertTrue(picture1.getId() == 1);
+        assertTrue(picture1.getId().equals("1"));
         assertTrue(picture1.getPost().getId() == 1);
     }
 

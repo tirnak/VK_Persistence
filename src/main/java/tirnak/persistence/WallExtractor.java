@@ -4,11 +4,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 import tirnak.persistence.common.DomIterator;
 import tirnak.persistence.common.VkSeleniumGeneric;
 import tirnak.persistence.model.Post;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class WallExtractor extends VkSeleniumGeneric {
 
@@ -54,7 +57,14 @@ public class WallExtractor extends VkSeleniumGeneric {
 
     public Post parsePost(WebElement el) {
         Post post = new Post();
-        domIterator.visit(el, post);
+        synchronized (post) {
+            String script = el.findElement(By.className("post_like")).getAttribute("onmouseover");
+            ((FirefoxDriver) driver).executeScript(script);
+        }
+        synchronized (post) {
+            domIterator.visit(el, post);
+
+        }
         return post;
     }
 
