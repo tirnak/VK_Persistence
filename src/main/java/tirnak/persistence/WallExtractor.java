@@ -1,9 +1,6 @@
 package tirnak.persistence;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import tirnak.persistence.common.DomIterator;
@@ -57,14 +54,9 @@ public class WallExtractor extends VkSeleniumGeneric {
 
     public Post parsePost(WebElement el) {
         Post post = new Post();
-        synchronized (post) {
-            String script = el.findElement(By.className("post_like")).getAttribute("onmouseover");
-            ((FirefoxDriver) driver).executeScript(script);
-        }
-        synchronized (post) {
-            domIterator.visit(el, post);
-
-        }
+        String script =  el.findElement(By.className("post_like")).getAttribute("onmouseover");
+        ((JavascriptExecutor) driver).executeScript(script);
+        domIterator.visit(el, post);
         return post;
     }
 

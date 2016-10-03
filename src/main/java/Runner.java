@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.social.vkontakte.api.VKontakteProfile;
 import org.springframework.social.vkontakte.api.impl.VKontakteTemplate;
 import org.springframework.social.vkontakte.api.impl.json.VKArray;
@@ -31,8 +32,10 @@ public class Runner {
         URL filePath = Runner.class.getResource("credentials.properties");
         oAuthorizer = new VkOAuthorizer(properties, filePath);
 
-        System.setProperty("webdriver.gecko.driver","D:\\utils\\geckodriver.exe");
-        WebDriver driver = new FirefoxDriver();
+        System.setProperty("webdriver.firefox.marionette", properties.getProperty("path_to_driver"));
+        DesiredCapabilities capabilities = DesiredCapabilities.firefox();
+        capabilities.setCapability("marionette", true);
+        WebDriver driver = new FirefoxDriver(capabilities);
 
         VkAuthorizer authorizer = new VkAuthorizer(driver);
         authorizer.authorize();
