@@ -57,14 +57,10 @@ public class WallExtractor extends VkSeleniumGeneric {
 
     public Post parsePost(WebElement el) {
         Post post = new Post();
-        synchronized (post) {
-            String script = el.findElement(By.className("post_like")).getAttribute("onmouseover");
-            ((FirefoxDriver) driver).executeScript(script);
-        }
-        synchronized (post) {
-            domIterator.visit(el, post);
-
-        }
+        String script = el.findElement(By.className("post_like")).getAttribute("onmouseover");
+        ((FirefoxDriver) driver).executeScript(script);
+        ((FirefoxDriver) driver).executeScript("arguments[0].querySelector('.like_tt').style.display='block'", el);
+        domIterator.visit(el, post);
         return post;
     }
 
