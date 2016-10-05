@@ -19,7 +19,9 @@ public class ParserContainer {
             StringDateParserProducer.getInstance(),
             TextParserProducer.getInstance(),
             RepostParserProducer.getInstance(),
-            ImageParserProducer.getInstance());
+            ImageParserProducer.getInstance(),
+            PostIdParserProducer.getInstance(),
+            AuthorParserProducer.getInstance());
         for (ParserProducer producer : producers) {
             checkingFunctions.put(producer.getPredicateIfAppropriateDom(), producer.getFunctionForParsing());
         }

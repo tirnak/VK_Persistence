@@ -9,10 +9,9 @@ import java.util.*;
 @Entity
 @Table(name="post")
 public class Post {
-
     @Id
     @Column(name = "post_id")
-    private int id;
+    private String id;
 
     @Column(name = "date")
     private String date;
@@ -47,11 +46,11 @@ public class Post {
         inverseJoinColumns = { @JoinColumn(name = "person_id", referencedColumnName = "person_id")})
     public Set<Person> likedBy;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

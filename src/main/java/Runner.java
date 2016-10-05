@@ -51,10 +51,12 @@ public class Runner {
         WallExtractor wallExtractor = new WallExtractor(domIterator, driver, userId);
         wallExtractor.goToWall();
         VkImageSaver imageSaver = new VkImageSaver(driver, ".", userId);
-        WebElement postDiv1 = wallExtractor.getPostDivs().get(0);
-        Post post1 = wallExtractor.parsePost(postDiv1);
+//        WebElement postDiv1 = wallExtractor.getPostDivs().get(0);
+//        Post post1 = wallExtractor.parsePost(postDiv1);
         WebElement postDiv2 = wallExtractor.getPostDivs().get(1);
-        Post post2 = wallExtractor.parsePost(postDiv2);
+//        Post post2 = wallExtractor.parsePost(postDiv2);
+        WebElement postWithCommentsDiv =  driver.findElement(By.xpath(".//div[@id=\"post482616_6530\"]"));
+        Post postWithComments = wallExtractor.parsePost(postWithCommentsDiv);
 //        wallExtractor.parsePost();
 //        imageSaver.saveImagesWithMe();
         Thread.sleep(1000);
