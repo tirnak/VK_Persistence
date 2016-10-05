@@ -13,13 +13,21 @@ public class ParserContainer {
 
     public ParserContainer() {
         checkingFunctions = new HashMap<>();
+        /**
+         * Order is quite important here. First we should check if new post is to be introduced.
+         * And only then - parse webElement for its attributes (like id="post\d+_\d+")
+         */
         List<ParserProducer> producers = Arrays.asList(
+            RepostParserProducer.getInstance(),
+            CommentParserProducer.getInstance(),
             AudioParserProducer.getInstance(),
             LikeParserProducer.getInstance(),
+            LinkParserProducer.getInstance(),
             StringDateParserProducer.getInstance(),
             TextParserProducer.getInstance(),
-            RepostParserProducer.getInstance(),
-            ImageParserProducer.getInstance());
+            ImageParserProducer.getInstance(),
+            PostIdParserProducer.getInstance(),
+            AuthorParserProducer.getInstance());
         for (ParserProducer producer : producers) {
             checkingFunctions.put(producer.getPredicateIfAppropriateDom(), producer.getFunctionForParsing());
         }

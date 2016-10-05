@@ -22,7 +22,5 @@ public class NullObjects {
         return EMPTY_STRING;
     }
 
-    public static String wrapString(String nullable) {
-        return Optional.ofNullable(nullable).orElse("");
-    }
+
 }

@@ -7,7 +7,7 @@ import tirnak.persistence.model.Post;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
-import static tirnak.persistence.common.NullObjects.wrapString;
+import static tirnak.persistence.common.StringEnhanced.wrapString;
 
 public class StringDateParserProducer implements ParserProducer {
 
@@ -17,16 +17,11 @@ public class StringDateParserProducer implements ParserProducer {
     }
     private StringDateParserProducer() {}
 
-    private final static String STRING_DATE_CLASS = "post_date";
-    private final static String STRING_TIME_CLASS = "rel_date";
+    private final static String[] STRING_DATE_TIME_CLASSES = {"post_date", "rel_date"};
 
     @Override
     public Predicate<WebElement> getPredicateIfAppropriateDom() {
-        return el -> {
-            String cssClass = wrapString(el.getAttribute("class"));
-            return cssClass.contains(STRING_DATE_CLASS) ||
-                    cssClass.contains(STRING_TIME_CLASS);
-        };
+        return el -> wrapString(el.getAttribute("class")).containsOneOf(STRING_DATE_TIME_CLASSES);
     }
 
     @Override

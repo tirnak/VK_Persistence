@@ -10,29 +10,29 @@ import java.util.function.Predicate;
 
 import static tirnak.persistence.common.StringEnhanced.wrapString;
 
-public class LikeParserProducer implements ParserProducer {
+public class AuthorParserProducer implements ParserProducer {
 
-    private static LikeParserProducer instance = new LikeParserProducer();
-    public static LikeParserProducer getInstance() {
+    private static AuthorParserProducer instance = new AuthorParserProducer();
+    public static AuthorParserProducer getInstance() {
         return instance;
     }
-    private LikeParserProducer() {}
+    private AuthorParserProducer() {}
 
     @Override
     public Predicate<WebElement> getPredicateIfAppropriateDom() {
-        return el -> wrapString(el.getAttribute("class")).contains(LIKE_CLASS);
+        return el -> {
+            return wrapString(el.getAttribute("class")).equalsOneOf(AUTHOR_CLASSES);
+        };
     }
-
-    private static final String LIKE_CLASS = "like_tt_owner";
+    private static final String[] AUTHOR_CLASSES = {"author","copy_author"};
 
     @Override
     public BiFunction<WebElement, Post, Post> getFunctionForParsing() {
         return (el, post) -> {
-            Person person = new Person();
-            person.setHref(el.getAttribute("href"));
-            person.setFullName(el.getAttribute("title"));
-            person.addLike(post);
-            post.addLikedBy(person);
+            Person author = new Person();
+            author.setHref(el.getAttribute("href"));
+            author.setFullName(el.getText());
+            post.setAuthor(author);
             return post;
         };
     }

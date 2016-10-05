@@ -7,7 +7,7 @@ import tirnak.persistence.model.Post;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
-import static tirnak.persistence.common.NullObjects.wrapString;
+import static tirnak.persistence.common.StringEnhanced.wrapString;
 
 public class TextParserProducer implements ParserProducer {
 
@@ -19,10 +19,10 @@ public class TextParserProducer implements ParserProducer {
 
     @Override
     public Predicate<WebElement> getPredicateIfAppropriateDom() {
-        return el -> wrapString(el.getAttribute("class")).contains(TEXT_CLASS);
+        return el -> wrapString(el.getAttribute("class")).containsOneOf(TEXT_CLASS);
     }
 
-    private static final String TEXT_CLASS = "wall_post_text";
+    private static final String[] TEXT_CLASS = {"wall_post_text", "wall_reply_text"};
 
     @Override
     public BiFunction<WebElement, Post, Post> getFunctionForParsing() {

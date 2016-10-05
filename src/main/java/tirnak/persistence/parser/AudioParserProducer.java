@@ -9,7 +9,7 @@ import tirnak.persistence.model.Post;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
-import static tirnak.persistence.common.NullObjects.wrapString;
+import static tirnak.persistence.common.StringEnhanced.wrapString;
 
 public class AudioParserProducer implements ParserProducer {
 

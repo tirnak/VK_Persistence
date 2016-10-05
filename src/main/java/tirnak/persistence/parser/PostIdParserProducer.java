@@ -9,26 +9,27 @@ import java.util.function.Predicate;
 
 import static tirnak.persistence.common.StringEnhanced.wrapString;
 
-public class RepostParserProducer implements ParserProducer {
-    private static RepostParserProducer instance = new RepostParserProducer();
-    public static RepostParserProducer getInstance() {
+public class PostIdParserProducer implements ParserProducer {
+
+    private static PostIdParserProducer instance = new PostIdParserProducer();
+    public static PostIdParserProducer getInstance() {
         return instance;
     }
-    private RepostParserProducer() {}
+    private PostIdParserProducer() {}
 
     @Override
     public Predicate<WebElement> getPredicateIfAppropriateDom() {
-        return el -> wrapString(el.getAttribute("class")).contains(REPOST_CLASS);
+        return el -> wrapString(el.getAttribute("id")).matches(POST_ID_REGEX);
     }
 
-    private static final String REPOST_CLASS = "copy_quote";
+    private static final String POST_ID_REGEX = "post\\d+_\\d+";
 
     @Override
     public BiFunction<WebElement, Post, Post> getFunctionForParsing() {
         return (el, post) -> {
-            Post repost = new Post();
-            post.setRepostOf(repost);
-            return repost;
+            String id = el.getAttribute("id").replace("post","");
+            post.setId(id);
+            return post;
         };
     }
 }
