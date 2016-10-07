@@ -20,7 +20,7 @@ public class WallExtractor extends VkSeleniumGeneric {
         return XPATH_QUERY_CLASS_EXCEPT.replace("{}", className);
     }
     public static final String POSTS_FROM_PAGE_QUERY = ".//*[@id=\"page_wall_posts\"]/*[starts-with(@id,\"post\")]";
-    public static final String SCROLL_WALL_BUTTON_QUERY = getXpathQueryClassExcept("wall_more_link");
+    public static final String SCROLL_WALL_BUTTON_QUERY = "wall_more_link";
 
     long userId;
     private DomIterator domIterator;
@@ -38,12 +38,24 @@ public class WallExtractor extends VkSeleniumGeneric {
      * A method to scroll down the wall aimed to cope with lazy initialization of wall
      */
     public void scrollToEnd() throws InterruptedException {
-        try {
-            while (needsToBeLoaded()) {
-                driver.findElement(By.id(SCROLL_WALL_BUTTON_QUERY)).click();
-            }
-        } catch (Exception ignored) {}
+        while (needsToBeLoaded()) {
+            scrollDown();
+        }
+    }
 
+    /**
+     * A method to scroll down the wall aimed to cope with lazy initialization of wall
+     */
+    public void scrollDownNTimes(int times) throws InterruptedException {
+        for (int i = 0; i < times; i++) {
+            scrollDown();
+        }
+    }
+
+    private void scrollDown() {
+        try {
+            driver.findElement(By.id(SCROLL_WALL_BUTTON_QUERY)).click();
+        } catch (Exception ignored) {}
     }
 
     private boolean needsToBeLoaded() {

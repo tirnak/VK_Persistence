@@ -7,6 +7,8 @@ import tirnak.persistence.model.Link;
 import tirnak.persistence.model.Person;
 import tirnak.persistence.model.Post;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
@@ -27,7 +29,7 @@ public class LinkParserProducer implements ParserProducer {
 
     private static final String LINK_WRAPER_CLASS = "page_media_link_desc_wrap";
     private static final String LINK_DESCRIPTION = "page_media_link_desc";
-    private static final String LINK_HREF = "page_media_link_addr";
+    private static final String LINK_HREF = "page_media_link_title";
 
 
     @Override
@@ -35,10 +37,27 @@ public class LinkParserProducer implements ParserProducer {
         return (el, post) -> {
             Link link = new Link();
             link.setDescription(el.findElement(By.className(LINK_DESCRIPTION)).getText());
-            link.setHref(el.findElement(By.className(LINK_HREF)).getText());
+            String urlRaw = el.findElement(By.className(LINK_HREF)).getAttribute("href");
+            try {
+                link.setHref(cleanHref(urlRaw));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             link.setPost(post);
             post.addLink(link);
             return post;
         };
+    }
+
+    private String cleanHref(String urlRaw) throws UnsupportedEncodingException {
+        String queryParams = urlRaw.split("\\?")[1];
+        String[] params = queryParams.split("&");
+        for (String param : params) {
+            if (param.matches("to=.*")) {
+                param = param.replace("to=", "");
+                return URLDecoder.decode(param, "UTF-8");
+            }
+        }
+        throw new IllegalArgumentException("some exception during parsing of href of page_media_link_title: " + urlRaw);
     }
 }

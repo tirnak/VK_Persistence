@@ -19,6 +19,8 @@ import tirnak.persistence.parser.ParserContainer;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class Runner {
@@ -50,15 +52,19 @@ public class Runner {
         DomIterator domIterator = new DomIterator(new ParserContainer());
         WallExtractor wallExtractor = new WallExtractor(domIterator, driver, userId);
         wallExtractor.goToWall();
+        wallExtractor.scrollDownNTimes(20);
         VkImageSaver imageSaver = new VkImageSaver(driver, ".", userId);
-//        WebElement postDiv1 = wallExtractor.getPostDivs().get(0);
-//        Post post1 = wallExtractor.parsePost(postDiv1);
-        WebElement postDiv2 = wallExtractor.getPostDivs().get(1);
-//        Post post2 = wallExtractor.parsePost(postDiv2);
         WebElement postWithCommentsDiv =  driver.findElement(By.xpath(".//div[@id=\"post482616_6530\"]"));
         Post postWithComments = wallExtractor.parsePost(postWithCommentsDiv);
-//        wallExtractor.parsePost();
-//        imageSaver.saveImagesWithMe();
+        List<WebElement> postDivs =  wallExtractor.getPostDivs();
+        List<Post> posts = new ArrayList<>();
+        for (WebElement el : postDivs) {
+            if (!el.findElements(By.className("page_media_link_addr")).isEmpty()) {
+                try {
+                    posts.add(wallExtractor.parsePost(el));
+                } catch (Exception ignored) {}
+            }
+        }
         Thread.sleep(1000);
 //            makeFriendsRequest();
 
