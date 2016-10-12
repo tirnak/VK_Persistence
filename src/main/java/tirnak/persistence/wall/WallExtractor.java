@@ -1,4 +1,4 @@
-package tirnak.persistence;
+package tirnak.persistence.wall;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -21,6 +21,7 @@ public class WallExtractor extends VkSeleniumGeneric {
     }
     public static final String POSTS_FROM_PAGE_QUERY = ".//*[@id=\"page_wall_posts\"]/*[starts-with(@id,\"post\")]";
     public static final String SCROLL_WALL_BUTTON_QUERY = "wall_more_link";
+    public static final String EXPAND_CLASS = "wall_post_more";
 
     long userId;
     private DomIterator domIterator;
@@ -40,6 +41,9 @@ public class WallExtractor extends VkSeleniumGeneric {
     public void scrollToEnd() throws InterruptedException {
         while (needsToBeLoaded()) {
             scrollDown();
+        }
+        for (WebElement link : driver.findElements(By.className(EXPAND_CLASS))) {
+            link.click();
         }
     }
 

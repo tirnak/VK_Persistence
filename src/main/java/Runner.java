@@ -12,7 +12,7 @@ import org.springframework.social.vkontakte.api.impl.json.VKArray;
 import tirnak.persistence.VkAuthorizer;
 import tirnak.persistence.VkImageSaver;
 import tirnak.persistence.VkOAuthorizer;
-import tirnak.persistence.WallExtractor;
+import tirnak.persistence.wall.WallExtractor;
 import tirnak.persistence.common.DomIterator;
 import tirnak.persistence.model.Post;
 import tirnak.persistence.parser.ParserContainer;
@@ -52,19 +52,10 @@ public class Runner {
         DomIterator domIterator = new DomIterator(new ParserContainer());
         WallExtractor wallExtractor = new WallExtractor(domIterator, driver, userId);
         wallExtractor.goToWall();
-        wallExtractor.scrollDownNTimes(20);
+        wallExtractor.scrollToEnd();
         VkImageSaver imageSaver = new VkImageSaver(driver, ".", userId);
-        WebElement postWithCommentsDiv =  driver.findElement(By.xpath(".//div[@id=\"post482616_6530\"]"));
-        Post postWithComments = wallExtractor.parsePost(postWithCommentsDiv);
-        List<WebElement> postDivs =  wallExtractor.getPostDivs();
-        List<Post> posts = new ArrayList<>();
-        for (WebElement el : postDivs) {
-            if (!el.findElements(By.className("page_media_link_addr")).isEmpty()) {
-                try {
-                    posts.add(wallExtractor.parsePost(el));
-                } catch (Exception ignored) {}
-            }
-        }
+
+
         Thread.sleep(1000);
 //            makeFriendsRequest();
 
