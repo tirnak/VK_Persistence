@@ -1,9 +1,6 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.social.vkontakte.api.VKontakteProfile;
@@ -13,14 +10,10 @@ import tirnak.persistence.VkAuthorizer;
 import tirnak.persistence.VkImageSaver;
 import tirnak.persistence.VkOAuthorizer;
 import tirnak.persistence.wall.WallExtractor;
-import tirnak.persistence.common.DomIterator;
-import tirnak.persistence.model.Post;
-import tirnak.persistence.parser.ParserContainer;
+import tirnak.persistence.wall.filter.TextPostFilter;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 public class Runner {
@@ -49,10 +42,10 @@ public class Runner {
 
         vKontakteTemplate = new VKontakteTemplate(oAuthorizer.getAccessToken(), oAuthorizer.getClientSecret());
         long userId = vKontakteTemplate.usersOperations().getUser().getId();
-        DomIterator domIterator = new DomIterator(new ParserContainer());
-        WallExtractor wallExtractor = new WallExtractor(domIterator, driver, userId);
+        WallExtractor wallExtractor = new WallExtractor(driver, userId);
         wallExtractor.goToWall();
         wallExtractor.scrollToEnd();
+        new TextPostFilter().filter((JavascriptExecutor) driver);
         VkImageSaver imageSaver = new VkImageSaver(driver, ".", userId);
 
 

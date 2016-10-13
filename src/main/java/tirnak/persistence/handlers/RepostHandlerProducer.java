@@ -1,7 +1,7 @@
-package tirnak.persistence.parser;
+package tirnak.persistence.handlers;
 
 import org.openqa.selenium.WebElement;
-import tirnak.persistence.common.ParserProducer;
+import tirnak.persistence.common.HandlerProducer;
 import tirnak.persistence.model.Post;
 
 import java.util.function.BiFunction;
@@ -9,12 +9,12 @@ import java.util.function.Predicate;
 
 import static tirnak.persistence.common.StringEnhanced.wrapString;
 
-public class RepostParserProducer implements ParserProducer {
-    private static RepostParserProducer instance = new RepostParserProducer();
-    public static RepostParserProducer getInstance() {
+public class RepostHandlerProducer implements HandlerProducer {
+    private static RepostHandlerProducer instance = new RepostHandlerProducer();
+    public static RepostHandlerProducer getInstance() {
         return instance;
     }
-    private RepostParserProducer() {}
+    private RepostHandlerProducer() {}
 
     @Override
     public Predicate<WebElement> getPredicateIfAppropriateDom() {

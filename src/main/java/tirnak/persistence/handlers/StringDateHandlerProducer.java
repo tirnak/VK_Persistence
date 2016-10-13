@@ -1,7 +1,7 @@
-package tirnak.persistence.parser;
+package tirnak.persistence.handlers;
 
 import org.openqa.selenium.WebElement;
-import tirnak.persistence.common.ParserProducer;
+import tirnak.persistence.common.HandlerProducer;
 import tirnak.persistence.model.Post;
 
 import java.util.function.BiFunction;
@@ -9,13 +9,13 @@ import java.util.function.Predicate;
 
 import static tirnak.persistence.common.StringEnhanced.wrapString;
 
-public class StringDateParserProducer implements ParserProducer {
+public class StringDateHandlerProducer implements HandlerProducer {
 
-    private static StringDateParserProducer instance = new StringDateParserProducer();
-    public static StringDateParserProducer getInstance() {
+    private static StringDateHandlerProducer instance = new StringDateHandlerProducer();
+    public static StringDateHandlerProducer getInstance() {
         return instance;
     }
-    private StringDateParserProducer() {}
+    private StringDateHandlerProducer() {}
 
     private final static String[] STRING_DATE_TIME_CLASSES = {"post_date", "rel_date"};
 

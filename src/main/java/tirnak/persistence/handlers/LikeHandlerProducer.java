@@ -1,7 +1,7 @@
-package tirnak.persistence.parser;
+package tirnak.persistence.handlers;
 
 import org.openqa.selenium.WebElement;
-import tirnak.persistence.common.ParserProducer;
+import tirnak.persistence.common.HandlerProducer;
 import tirnak.persistence.model.Person;
 import tirnak.persistence.model.Post;
 
@@ -10,13 +10,13 @@ import java.util.function.Predicate;
 
 import static tirnak.persistence.common.StringEnhanced.wrapString;
 
-public class LikeParserProducer implements ParserProducer {
+public class LikeHandlerProducer implements HandlerProducer {
 
-    private static LikeParserProducer instance = new LikeParserProducer();
-    public static LikeParserProducer getInstance() {
+    private static LikeHandlerProducer instance = new LikeHandlerProducer();
+    public static LikeHandlerProducer getInstance() {
         return instance;
     }
-    private LikeParserProducer() {}
+    private LikeHandlerProducer() {}
 
     @Override
     public Predicate<WebElement> getPredicateIfAppropriateDom() {

@@ -1,10 +1,9 @@
-package tirnak.persistence.parser;
+package tirnak.persistence.handlers;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import tirnak.persistence.common.ParserProducer;
+import tirnak.persistence.common.HandlerProducer;
 import tirnak.persistence.model.Link;
-import tirnak.persistence.model.Person;
 import tirnak.persistence.model.Post;
 
 import java.io.UnsupportedEncodingException;
@@ -14,13 +13,13 @@ import java.util.function.Predicate;
 
 import static tirnak.persistence.common.StringEnhanced.wrapString;
 
-public class LinkParserProducer implements ParserProducer {
+public class LinkHandlerProducer implements HandlerProducer {
 
-    private static LinkParserProducer instance = new LinkParserProducer();
-    public static LinkParserProducer getInstance() {
+    private static LinkHandlerProducer instance = new LinkHandlerProducer();
+    public static LinkHandlerProducer getInstance() {
         return instance;
     }
-    private LinkParserProducer() {}
+    private LinkHandlerProducer() {}
 
     @Override
     public Predicate<WebElement> getPredicateIfAppropriateDom() {

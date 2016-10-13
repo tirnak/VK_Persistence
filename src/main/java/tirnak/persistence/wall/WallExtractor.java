@@ -5,13 +5,14 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.interactions.Actions;
 import tirnak.persistence.common.DomIterator;
 import tirnak.persistence.common.VkSeleniumGeneric;
+import tirnak.persistence.handlers.containers.BasePostHandlerContainer;
+import tirnak.persistence.handlers.containers.LikeHandlerContainer;
+import tirnak.persistence.handlers.containers.RepostHandlerContainer;
 import tirnak.persistence.model.Post;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class WallExtractor extends VkSeleniumGeneric {
 
@@ -24,12 +25,13 @@ public class WallExtractor extends VkSeleniumGeneric {
     public static final String EXPAND_CLASS = "wall_post_more";
 
     long userId;
-    private DomIterator domIterator;
+    private DomIterator baseDomIterator = new DomIterator(new BasePostHandlerContainer());
+    private DomIterator likeDomIterator = new DomIterator(new LikeHandlerContainer());
+    private DomIterator repostDomIterator = new DomIterator(new RepostHandlerContainer());
 
-    public WallExtractor(DomIterator domIterator, WebDriver driver, long userId) {
+    public WallExtractor(WebDriver driver, long userId) {
         super(driver);
         this.userId = userId;
-        this.domIterator = domIterator;
     }
 
     public void goToWall() {
@@ -73,15 +75,29 @@ public class WallExtractor extends VkSeleniumGeneric {
 
     public Post parsePost(WebElement el) {
         Post post = new Post();
-        String script = el.findElement(By.className("post_like")).getAttribute("onmouseover");
-        ((FirefoxDriver) driver).executeScript(script);
-        ((FirefoxDriver) driver).executeScript("arguments[0].querySelector('.like_tt').style.display='block'", el);
-        domIterator.visit(el, post);
+
+        baseDomIterator.visit(el, post);
+        showLikesOfPost(el);
+        likeDomIterator.visit(el, post);
+        showRepostedOfPost(el);
+        repostDomIterator.visit(el, post);
         return post;
     }
 
     public List<WebElement> getPostDivs() {
         return driver.findElements(By.xpath(POSTS_FROM_PAGE_QUERY));
+    }
+
+    private void showLikesOfPost(WebElement el) {
+        String script = el.findElement(By.className("post_like")).getAttribute("onmouseover");
+        ((FirefoxDriver) driver).executeScript(script);
+        ((FirefoxDriver) driver).executeScript("arguments[0].querySelector('.like_tt').style.display='block'", el);
+    }
+
+    private void showRepostedOfPost(WebElement el) {
+        String script = el.findElement(By.className("post_share")).getAttribute("onmouseover");
+        ((FirefoxDriver) driver).executeScript(script);
+        ((FirefoxDriver) driver).executeScript("arguments[0].querySelector('.like_tt').style.display='block'", el);
     }
 
 //    public WebElement getRepostDivs(WebElement post) {
