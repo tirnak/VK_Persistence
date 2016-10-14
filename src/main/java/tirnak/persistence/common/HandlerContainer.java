@@ -9,7 +9,7 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 abstract public class HandlerContainer {
-    Map<Predicate<WebElement>, BiFunction<WebElement, Post, Post>> checkingFunctions;
+    Map<Predicate<WebElement>, BiFunction<WebElement, Post, Post>> checkingFunctions = new HashMap<>();
 
     protected HandlerContainer(List<HandlerProducer> producers) {
         for (HandlerProducer producer : producers) {

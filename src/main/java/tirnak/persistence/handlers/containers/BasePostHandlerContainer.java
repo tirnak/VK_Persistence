@@ -9,7 +9,7 @@ import java.util.List;
 
 public class BasePostHandlerContainer extends HandlerContainer {
     private static List<HandlerProducer> handlers = Arrays.asList(
-            RepostHandlerContainer.getInstance(),
+            RepostHandlerProducer.getInstance(),
             CommentHandlerProducer.getInstance(),
             AudioHandlerProducer.getInstance(),
             AuthorHandlerProducer.getInstance(),
