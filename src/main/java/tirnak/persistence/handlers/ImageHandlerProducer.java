@@ -1,24 +1,22 @@
-package tirnak.persistence.parser;
+package tirnak.persistence.handlers;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import tirnak.persistence.common.ParserProducer;
-import tirnak.persistence.model.Audio;
+import tirnak.persistence.common.HandlerProducer;
 import tirnak.persistence.model.Picture;
 import tirnak.persistence.model.Post;
 
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
-import static tirnak.persistence.common.NullObjects.wrapString;
+import static tirnak.persistence.common.StringEnhanced.wrapString;
 
-public class ImageParserProducer implements ParserProducer {
+public class ImageHandlerProducer implements HandlerProducer {
 
-    private static ImageParserProducer instance = new ImageParserProducer();
-    public static ImageParserProducer getInstance() {
+    private static ImageHandlerProducer instance = new ImageHandlerProducer();
+    public static ImageHandlerProducer getInstance() {
         return instance;
     }
-    private ImageParserProducer() {}
+    private ImageHandlerProducer() {}
 
     private static final String WALL_IMAGE_CLASS = "image_cover";
     @Override

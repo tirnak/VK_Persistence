@@ -9,10 +9,9 @@ import java.util.*;
 @Entity
 @Table(name="post")
 public class Post {
-
     @Id
     @Column(name = "post_id")
-    private int id;
+    private String id;
 
     @Column(name = "date")
     private String date;
@@ -42,16 +41,19 @@ public class Post {
     @OneToMany(mappedBy = "post")
     private List<Picture> images;
 
+    @OneToMany(mappedBy = "post")
+    private List<Link> links;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "vk_like", joinColumns = {@JoinColumn(name = "post_id", referencedColumnName = "post_id")},
         inverseJoinColumns = { @JoinColumn(name = "person_id", referencedColumnName = "person_id")})
     public Set<Person> likedBy;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -126,6 +128,20 @@ public class Post {
             images = new ArrayList<>();
         }
         images.add(picture);
+    }
+
+    public void addComment(Post comment) {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
+        comments.add(comment);
+    }
+
+    public void addLink(Link link) {
+        if (links == null) {
+            links = new ArrayList<>();
+        }
+        links.add(link);
     }
 
     @Override

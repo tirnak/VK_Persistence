@@ -1,23 +1,23 @@
-package tirnak.persistence.parser;
+package tirnak.persistence.handlers;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import tirnak.persistence.common.ParserProducer;
+import tirnak.persistence.common.HandlerProducer;
 import tirnak.persistence.model.Audio;
 import tirnak.persistence.model.Post;
 
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
-import static tirnak.persistence.common.NullObjects.wrapString;
+import static tirnak.persistence.common.StringEnhanced.wrapString;
 
-public class AudioParserProducer implements ParserProducer {
+public class AudioHandlerProducer implements HandlerProducer {
 
-    private static AudioParserProducer instance = new AudioParserProducer();
-    public static AudioParserProducer getInstance() {
+    private static AudioHandlerProducer instance = new AudioHandlerProducer();
+    public static AudioHandlerProducer getInstance() {
         return instance;
     }
-    private AudioParserProducer() {}
+    private AudioHandlerProducer() {}
 
     @Override
     public Predicate<WebElement> getPredicateIfAppropriateDom() {

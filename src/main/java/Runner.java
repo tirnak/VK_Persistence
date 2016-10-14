@@ -1,21 +1,15 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.social.vkontakte.api.VKontakteProfile;
 import org.springframework.social.vkontakte.api.impl.VKontakteTemplate;
 import org.springframework.social.vkontakte.api.impl.json.VKArray;
 import tirnak.persistence.VkAuthorizer;
 import tirnak.persistence.VkImageSaver;
 import tirnak.persistence.VkOAuthorizer;
-import tirnak.persistence.WallExtractor;
-import tirnak.persistence.common.DomIterator;
-import tirnak.persistence.model.Post;
-import tirnak.persistence.parser.ParserContainer;
+import tirnak.persistence.wall.WallExtractor;
+import tirnak.persistence.wall.filter.TextPostFilter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,9 +26,9 @@ public class Runner {
         URL filePath = Runner.class.getResource("credentials.properties");
         oAuthorizer = new VkOAuthorizer(properties, filePath);
 
-        System.setProperty("webdriver.firefox.marionette", properties.getProperty("path_to_driver"));
         DesiredCapabilities capabilities = DesiredCapabilities.firefox();
         capabilities.setCapability("marionette", true);
+        System.setProperty("webdriver.gecko.driver","D:\\utils\\geckodriver.exe");
         WebDriver driver = new FirefoxDriver(capabilities);
 
         VkAuthorizer authorizer = new VkAuthorizer(driver);
@@ -47,16 +41,13 @@ public class Runner {
 
         vKontakteTemplate = new VKontakteTemplate(oAuthorizer.getAccessToken(), oAuthorizer.getClientSecret());
         long userId = vKontakteTemplate.usersOperations().getUser().getId();
-        DomIterator domIterator = new DomIterator(new ParserContainer());
-        WallExtractor wallExtractor = new WallExtractor(domIterator, driver, userId);
+        WallExtractor wallExtractor = new WallExtractor(driver, userId);
         wallExtractor.goToWall();
+        wallExtractor.scrollToEnd();
+        new TextPostFilter().filter((JavascriptExecutor) driver);
         VkImageSaver imageSaver = new VkImageSaver(driver, ".", userId);
-        WebElement postDiv1 = wallExtractor.getPostDivs().get(0);
-        Post post1 = wallExtractor.parsePost(postDiv1);
-        WebElement postDiv2 = wallExtractor.getPostDivs().get(1);
-        Post post2 = wallExtractor.parsePost(postDiv2);
-//        wallExtractor.parsePost();
-//        imageSaver.saveImagesWithMe();
+
+
         Thread.sleep(1000);
 //            makeFriendsRequest();
 

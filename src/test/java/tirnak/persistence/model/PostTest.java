@@ -28,7 +28,7 @@ public class PostTest {
         Picture picture = new Picture();
         picture.setId("1");
         Post post = new Post();
-        post.setId(1);
+        post.setId("1");
         picture.setPost(post);
         session.save(post);
         session.save(picture);
@@ -40,14 +40,14 @@ public class PostTest {
         List result = session.createQuery("from Picture").list();
         Picture picture1 = (Picture) result.get(0);
         assertTrue(picture1.getId().equals("1"));
-        assertTrue(picture1.getPost().getId() == 1);
+        assertTrue(picture1.getPost().getId().equals("1"));
     }
 
     @Test
     public void testLike() throws Exception {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        Post post = new Post(); post.setId(10); session.save(post);
+        Post post = new Post(); post.setId("10"); session.save(post);
         Person person = new Person(); person.setHref("11"); session.save(person);
         post.addLikedBy(person); //person.addLike(post);
         session.getTransaction().commit();
@@ -57,7 +57,7 @@ public class PostTest {
         session.beginTransaction();
         List result = session.createQuery("from Post ").list();
         Post post1 = (Post) result.get(0);
-        assertTrue(post1.getId() == 10);
+        assertTrue(post1.getId().equals("10"));
         for (Person person1 : post1.getLikedBy()) {
             assertTrue(person1.getHref().equals("11"));
         }
@@ -70,7 +70,7 @@ public class PostTest {
         List<Post> posts = new ArrayList<Post>();
         for (int i = 0; i < 5; i++) {
             posts.add(new Post());
-            posts.get(i).setId(i);
+            posts.get(i).setId(i + "");
             if (i > 0) {
                 posts.get(i).setParent(posts.get(i - 1));
             }
