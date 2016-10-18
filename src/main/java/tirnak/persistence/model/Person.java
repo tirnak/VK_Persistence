@@ -1,12 +1,13 @@
 package tirnak.persistence.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name="person")
-public class Person {
+public class Person implements Serializable {
     @Id
     @Column(name = "person_href")
     private String href;
@@ -24,9 +25,6 @@ public class Person {
 
     public void setHref(String href) {
         this.href = href;
-    }
-    public String getFullName() {
-        return fullName;
     }
     public void setFullName(String fullName) {
         this.fullName = fullName;

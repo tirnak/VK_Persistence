@@ -61,6 +61,7 @@ public class PostTest {
         for (Person person1 : post1.getLikedBy()) {
             assertTrue(person1.getHref().equals("11"));
         }
+        session.close();
     }
 
     @Test
@@ -87,11 +88,12 @@ public class PostTest {
         session.beginTransaction();
         Function<Post, Post> getParent = p -> p.getParent();
         Function<Post, Post> getRepostOf = p -> p.getRepostOf();
-        Post post = session.get(Post.class, 4);
+        Post post = session.get(Post.class, "4");
         _testHierarchy(getParent, post);
         // test repost
-        post = session.get(Post.class, 4);
+        post = session.get(Post.class, "4");
         _testHierarchy(getRepostOf, post);
+        session.close();
     }
 
     private void _testHierarchy(Function<Post,Post> f, Post initial) {

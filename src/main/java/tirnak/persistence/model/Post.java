@@ -4,11 +4,12 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.*;
 
 @Entity
 @Table(name="post")
-public class Post {
+public class Post implements Serializable {
     @Id
     @Column(name = "post_id")
     private String id;
@@ -24,7 +25,7 @@ public class Post {
     private Post repostOf;
 
     @ManyToOne
-    @JoinColumn(name="person_id")
+    @JoinColumn(name="person_href")
     private Person author;
 
     @ManyToOne
@@ -46,7 +47,7 @@ public class Post {
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "vk_like", joinColumns = {@JoinColumn(name = "post_id", referencedColumnName = "post_id")},
-        inverseJoinColumns = { @JoinColumn(name = "person_id", referencedColumnName = "person_id")})
+        inverseJoinColumns = { @JoinColumn(name = "person_href", referencedColumnName = "person_href")})
     public Set<Person> likedBy;
 
     public String getId() {

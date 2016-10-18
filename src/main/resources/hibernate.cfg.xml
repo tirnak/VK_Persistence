@@ -17,6 +17,8 @@
         <mapping class="tirnak.persistence.model.Post" />
         <mapping class="tirnak.persistence.model.Video" />
         <mapping class="tirnak.persistence.model.Audio" />
+        <mapping class="tirnak.persistence.model.Like" />
+        <mapping class="tirnak.persistence.model.Link" />
     </session-factory>
 </hibernate-configuration>
 
