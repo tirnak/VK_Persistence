@@ -17,9 +17,9 @@ public class DomIterator {
     }
 
     public void visit(WebElement el, Post post) {
-        Optional<BiFunction<WebElement, Post, Post>> parsingFunction = handlerContainer.getFunctionForWebElement(el);
+        Optional<Handler> parsingFunction = handlerContainer.getParserForWebElement(el);
         if (parsingFunction.isPresent()) {
-            post = parsingFunction.get().apply(el, post);
+            post = parsingFunction.get().parse(el, post);
         }
         List<WebElement> children = getChildren(el);
         for (WebElement child : children) {

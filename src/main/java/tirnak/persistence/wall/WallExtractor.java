@@ -1,5 +1,6 @@
 package tirnak.persistence.wall;
 
+import org.hibernate.SessionFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -24,14 +25,18 @@ public class WallExtractor extends VkSeleniumGeneric {
     public static final String SCROLL_WALL_BUTTON_QUERY = "wall_more_link";
     public static final String EXPAND_CLASS = "wall_post_more";
 
-    long userId;
-    private DomIterator baseDomIterator = new DomIterator(new BasePostHandlerContainer());
-    private DomIterator likeDomIterator = new DomIterator(new LikeHandlerContainer());
-    private DomIterator repostDomIterator = new DomIterator(new RepostHandlerContainer());
+    private long userId;
+    private SessionFactory sessionFactory;
+    private DomIterator baseDomIterator;
+    private DomIterator likeDomIterator;
+    private DomIterator repostDomIterator;
 
-    public WallExtractor(WebDriver driver, long userId) {
+    public WallExtractor(WebDriver driver, long userId, SessionFactory sessionFactory) {
         super(driver);
         this.userId = userId;
+        baseDomIterator = new DomIterator(new BasePostHandlerContainer(sessionFactory));
+        likeDomIterator = new DomIterator(new LikeHandlerContainer(sessionFactory));
+        repostDomIterator = new DomIterator(new RepostHandlerContainer(sessionFactory));
     }
 
     public void goToWall() {
