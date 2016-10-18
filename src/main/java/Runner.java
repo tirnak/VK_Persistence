@@ -1,5 +1,7 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -40,12 +42,15 @@ public class Runner {
             oAuthorizer.persist();
         }
 
+        SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+
         vKontakteTemplate = new VKontakteTemplate(oAuthorizer.getAccessToken(), oAuthorizer.getClientSecret());
         long userId = vKontakteTemplate.usersOperations().getUser().getId();
-        WallExtractor wallExtractor = new WallExtractor(driver, userId);
+        WallExtractor wallExtractor = new WallExtractor(driver, userId, sessionFactory);
         wallExtractor.goToWall();
-        wallExtractor.scrollToEnd();
-        new TextPostFilter().filter((JavascriptExecutor) driver);
+
+//        wallExtractor.scrollToEnd();
+//        new TextPostFilter().filter((JavascriptExecutor) driver);
         VkImageSaver imageSaver = new VkImageSaver(driver, ".", userId);
 
 

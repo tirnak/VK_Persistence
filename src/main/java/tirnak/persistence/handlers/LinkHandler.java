@@ -1,8 +1,10 @@
 package tirnak.persistence.handlers;
 
+import org.hibernate.SessionFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import tirnak.persistence.common.HandlerProducer;
+import tirnak.persistence.common.AbstractHandler;
+import tirnak.persistence.common.Handler;
 import tirnak.persistence.model.Link;
 import tirnak.persistence.model.Post;
 
@@ -13,17 +15,15 @@ import java.util.function.Predicate;
 
 import static tirnak.persistence.common.StringEnhanced.wrapString;
 
-public class LinkHandlerProducer implements HandlerProducer {
+public class LinkHandler extends AbstractHandler implements Handler {
 
-    private static LinkHandlerProducer instance = new LinkHandlerProducer();
-    public static LinkHandlerProducer getInstance() {
-        return instance;
+    public LinkHandler(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
-    private LinkHandlerProducer() {}
 
     @Override
-    public Predicate<WebElement> getPredicateIfAppropriateDom() {
-        return el -> wrapString(el.getAttribute("class")).contains(LINK_WRAPER_CLASS);
+    public boolean checkDom(WebElement el) {
+        return wrapString(el.getAttribute("class")).contains(LINK_WRAPER_CLASS);
     }
 
     private static final String LINK_WRAPER_CLASS = "page_media_link_desc_wrap";
@@ -32,20 +32,18 @@ public class LinkHandlerProducer implements HandlerProducer {
 
 
     @Override
-    public BiFunction<WebElement, Post, Post> getFunctionForParsing() {
-        return (el, post) -> {
-            Link link = new Link();
-            link.setDescription(el.findElement(By.className(LINK_DESCRIPTION)).getText());
-            String urlRaw = el.findElement(By.className(LINK_HREF)).getAttribute("href");
-            try {
-                link.setHref(cleanHref(urlRaw));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            link.setPost(post);
-            post.addLink(link);
-            return post;
-        };
+    public Post parse(WebElement el, Post currentPost) {
+        Link link = new Link();
+        link.setDescription(el.findElement(By.className(LINK_DESCRIPTION)).getText());
+        String urlRaw = el.findElement(By.className(LINK_HREF)).getAttribute("href");
+        try {
+            link.setHref(cleanHref(urlRaw));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        link.setPost(currentPost);
+        currentPost.addLink(link);
+        return currentPost;
     }
 
     private String cleanHref(String urlRaw) throws UnsupportedEncodingException {
