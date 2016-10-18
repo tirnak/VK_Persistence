@@ -1,12 +1,9 @@
 package tirnak.persistence;
 
-import org.springframework.social.vkontakte.api.impl.VKontakteTemplate;
-
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Properties;
-import java.util.ResourceBundle;
 
 /**
  * Created by kirill on 01.09.16.

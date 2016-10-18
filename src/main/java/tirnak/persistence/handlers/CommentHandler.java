@@ -6,9 +6,6 @@ import tirnak.persistence.common.AbstractHandler;
 import tirnak.persistence.common.Handler;
 import tirnak.persistence.model.Post;
 
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
-
 import static tirnak.persistence.common.StringEnhanced.wrapString;
 
 public class CommentHandler extends AbstractHandler implements Handler {
@@ -21,7 +18,7 @@ public class CommentHandler extends AbstractHandler implements Handler {
     public boolean checkDom(WebElement el) {
         return wrapString(el.getAttribute("class")).contains(COMMENT_CLASS);
     }
-    private static final String COMMENT_CLASS = "reply";
+    private static final String COMMENT_CLASS = "reply_dived";
 
     @Override
     public Post parse(WebElement el, Post currentPost) {

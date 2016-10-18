@@ -1,10 +1,7 @@
 package tirnak.persistence.wall;
 
 import org.hibernate.SessionFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import tirnak.persistence.common.DomIterator;
 import tirnak.persistence.common.VkSeleniumGeneric;
@@ -96,13 +93,21 @@ public class WallExtractor extends VkSeleniumGeneric {
     private void showLikesOfPost(WebElement el) {
         String script = el.findElement(By.className("post_like")).getAttribute("onmouseover");
         ((FirefoxDriver) driver).executeScript(script);
-        ((FirefoxDriver) driver).executeScript("arguments[0].querySelector('.like_tt').style.display='block'", el);
+        try {
+            ((FirefoxDriver) driver).executeScript("arguments[0].querySelector('.like_tt').style.display='block'", el);
+        } catch (WebDriverException e) {
+            System.out.println(el.getAttribute("id") + " has no likes");
+        }
     }
 
     private void showRepostedOfPost(WebElement el) {
         String script = el.findElement(By.className("post_share")).getAttribute("onmouseover");
         ((FirefoxDriver) driver).executeScript(script);
-        ((FirefoxDriver) driver).executeScript("arguments[0].querySelector('.like_tt').style.display='block'", el);
+        try {
+            ((FirefoxDriver) driver).executeScript("arguments[0].querySelector('.like_tt').style.display='block'", el);
+        } catch (WebDriverException e) {
+            System.out.println(el.getAttribute("id") + " has no likes");
+        }
     }
 
 //    public WebElement getRepostDivs(WebElement post) {

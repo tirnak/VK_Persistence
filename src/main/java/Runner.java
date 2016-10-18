@@ -1,21 +1,23 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.springframework.social.vkontakte.api.VKontakteProfile;
 import org.springframework.social.vkontakte.api.impl.VKontakteTemplate;
-import org.springframework.social.vkontakte.api.impl.json.VKArray;
 import tirnak.persistence.VkAuthorizer;
-import tirnak.persistence.VkImageSaver;
 import tirnak.persistence.VkOAuthorizer;
+import tirnak.persistence.model.Post;
 import tirnak.persistence.wall.WallExtractor;
-import tirnak.persistence.wall.filter.TextPostFilter;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 public class Runner {
@@ -51,12 +53,35 @@ public class Runner {
 
 //        wallExtractor.scrollToEnd();
 //        new TextPostFilter().filter((JavascriptExecutor) driver);
-        VkImageSaver imageSaver = new VkImageSaver(driver, ".", userId);
+//        VkImageSaver imageSaver = new VkImageSaver(driver, ".", userId);
+//        List<Post> posts = wallExtractor.getPostDivs().stream()
+//                .map(wallExtractor::parsePost).collect(Collectors.toList());
+        List<Post> posts = Collections.singletonList(
+                wallExtractor.parsePost(wallExtractor.getPostDivs().get(0)));
+
+        persistPosts(sessionFactory, posts);
+
+        posts = getPosts(sessionFactory);
 
 
         Thread.sleep(1000);
 //            makeFriendsRequest();
 
+    }
+
+    private static void persistPosts(SessionFactory sessionFactory, List<Post> posts) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        posts.forEach(session::saveOrUpdate);
+        session.close();
+    }
+
+    private static List<Post> getPosts(SessionFactory sessionFactory) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        List<Post> result = session.createQuery("from Post ").list();
+        session.close();
+        return result;
     }
 
     public static void getToken(WebDriver driver) throws IOException {
@@ -78,25 +103,7 @@ public class Runner {
         oAuthorizer.setAccessToken(actualObj.get("access_token").textValue());
     }
 
-    public static void getPostsByApi() {
 
-//        VKontakteTemplate vKontakteTemplate = new VKontakteTemplate(oAuthorizer.getAccessToken(), oAuthorizer.getClientSecret());
-//        List<Post> posts = vKontakteTemplate.wallOperations().getPosts();
-//        for (Post post: posts) {
-//            post.getText();
-//            post.getComments();
-//        }
-//        CommentsQuery query = new CommentsQuery.Builder(new UserWall(482616L), 6349).build();
-//        vKontakteTemplate.wallOperations().getComments(query);
-    }
 
-    public static void makeFriendsRequest() {
-
-        VKontakteTemplate vKontakteTemplate = new VKontakteTemplate(oAuthorizer.getAccessToken(), oAuthorizer.getClientSecret());
-        VKArray<VKontakteProfile> array = vKontakteTemplate.friendsOperations().get();
-        for (VKontakteProfile profile : array.getItems()) {
-            System.out.println(profile.getBirthDate().getDay());
-        }
-    }
 
 }

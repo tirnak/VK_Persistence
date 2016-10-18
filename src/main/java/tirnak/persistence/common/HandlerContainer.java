@@ -2,11 +2,11 @@ package tirnak.persistence.common;
 
 import org.hibernate.SessionFactory;
 import org.openqa.selenium.WebElement;
-import tirnak.persistence.model.Post;
 
-import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 abstract public class HandlerContainer {
 

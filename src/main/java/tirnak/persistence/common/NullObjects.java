@@ -2,7 +2,6 @@ package tirnak.persistence.common;
 
 import com.google.common.collect.ImmutableSet;
 
-import java.util.Optional;
 import java.util.Set;
 
 public class NullObjects {

@@ -10,8 +10,6 @@ import tirnak.persistence.model.Post;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
 
 import static tirnak.persistence.common.StringEnhanced.wrapString;
 

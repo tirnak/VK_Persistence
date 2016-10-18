@@ -7,9 +7,6 @@ import tirnak.persistence.common.Handler;
 import tirnak.persistence.model.Person;
 import tirnak.persistence.model.Post;
 
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
-
 import static tirnak.persistence.common.StringEnhanced.wrapString;
 
 public class LikeHandler extends AbstractHandler implements Handler {

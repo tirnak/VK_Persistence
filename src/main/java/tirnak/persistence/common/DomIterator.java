@@ -6,7 +6,6 @@ import tirnak.persistence.model.Post;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 public class DomIterator {
     private static String GET_CHILDRER_XPATH = "./*";

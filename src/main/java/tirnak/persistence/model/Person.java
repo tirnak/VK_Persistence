@@ -16,7 +16,7 @@ public class Person implements Serializable {
     @Column(name = "full_name")
     private String fullName;
 
-    @ManyToMany(cascade=CascadeType.ALL, mappedBy="likedBy", targetEntity = Post.class)
+    @ManyToMany(cascade=CascadeType.PERSIST, mappedBy="likedBy", targetEntity = Post.class)
     public Set<Post> likes;
 
     public String getHref() {

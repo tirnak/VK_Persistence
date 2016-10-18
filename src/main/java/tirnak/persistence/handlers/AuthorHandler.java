@@ -7,9 +7,6 @@ import tirnak.persistence.common.Handler;
 import tirnak.persistence.model.Person;
 import tirnak.persistence.model.Post;
 
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
-
 import static tirnak.persistence.common.StringEnhanced.wrapString;
 
 public class AuthorHandler extends AbstractHandler implements Handler {
@@ -23,6 +20,8 @@ public class AuthorHandler extends AbstractHandler implements Handler {
         return wrapString(el.getAttribute("class")).equalsOneOf(AUTHOR_CLASSES);
     }
     private static final String[] AUTHOR_CLASSES = {"author","copy_author"};
+    private static final String REPOST_ID_ATTRIBUTE = "data-post-id";
+
 
     @Override
     public Post parse(WebElement el, Post currentPost) {
@@ -30,6 +29,9 @@ public class AuthorHandler extends AbstractHandler implements Handler {
         author.setHref(el.getAttribute("href"));
         author.setFullName(el.getText());
         currentPost.setAuthor(author);
+        if (el.getAttribute(REPOST_ID_ATTRIBUTE) != null) {
+            currentPost.setId(el.getAttribute(REPOST_ID_ATTRIBUTE));
+        }
         return currentPost;
     }
 }
