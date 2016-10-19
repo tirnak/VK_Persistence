@@ -81,8 +81,8 @@ public class WallExtractor extends VkSeleniumGeneric {
         baseDomIterator.visit(el, post);
         showLikesOfPost(el);
         likeDomIterator.visit(el, post);
-        showRepostedOfPost(el);
-        repostDomIterator.visit(el, post);
+//        showRepostedOfPost(el);
+//        repostDomIterator.visit(el, post);
         return post;
     }
 

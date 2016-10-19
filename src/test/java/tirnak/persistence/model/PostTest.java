@@ -49,7 +49,8 @@ public class PostTest {
         session.beginTransaction();
         Post post = new Post(); post.setId("10"); session.save(post);
         Person person = new Person(); person.setHref("11"); session.save(person);
-        post.addLikedBy(person); //person.addLike(post);
+        Like like = new Like();
+        person.addLike(like); post.addLike(like);
         session.getTransaction().commit();
         session.close();
 
@@ -58,7 +59,8 @@ public class PostTest {
         List result = session.createQuery("from Post ").list();
         Post post1 = (Post) result.get(0);
         assertTrue(post1.getId().equals("10"));
-        for (Person person1 : post1.getLikedBy()) {
+        Person[] likedBy = post1.getLikes().stream().map(Like::getOwner).toArray(Person[]::new);
+        for (Person person1 : likedBy) {
             assertTrue(person1.getHref().equals("11"));
         }
         session.close();

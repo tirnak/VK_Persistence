@@ -4,6 +4,7 @@ import org.hibernate.SessionFactory;
 import org.openqa.selenium.WebElement;
 import tirnak.persistence.common.AbstractHandler;
 import tirnak.persistence.common.Handler;
+import tirnak.persistence.model.Like;
 import tirnak.persistence.model.Person;
 import tirnak.persistence.model.Post;
 
@@ -25,10 +26,11 @@ public class LikeHandler extends AbstractHandler implements Handler {
     @Override
     public Post parse(WebElement el, Post currentPost) {
         Person person = new Person();
+        Like like = new Like();
         person.setHref(el.getAttribute("href"));
         person.setFullName(el.getAttribute("title"));
-        person.addLike(currentPost);
-        currentPost.addLikedBy(person);
+        person.addLike(like);
+        currentPost.addLike(like);
         return currentPost;
     }
 }

@@ -1,14 +1,16 @@
 package tirnak.persistence.model;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name="post")
@@ -28,7 +30,7 @@ public class Post implements Serializable {
     private Post repostOf;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name="person_href")
+    @JoinColumn(name="author_href")
     private Person author;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -48,10 +50,14 @@ public class Post implements Serializable {
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
     private List<Link> links;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "vk_like", joinColumns = {@JoinColumn(name = "post_id", referencedColumnName = "post_id")},
-        inverseJoinColumns = { @JoinColumn(name = "person_href", referencedColumnName = "person_href")})
-    public Set<Person> likedBy;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
+    private List<Like> likes;
+
+    @Column(name = "saved_at", updatable = false)
+    private Date savedAt = new Date();
+
+    @Column(name = "version", updatable = false)
+    private int version = 1;
 
     public String getId() {
         return id;
@@ -109,15 +115,15 @@ public class Post implements Serializable {
         this.comments = comments;
     }
 
-    public Set<Person> getLikedBy() {
-        return likedBy;
+    public List<Like> getLikes() {
+        return likes;
     }
 
-    public void addLikedBy(Person personLiked) {
-        if (likedBy == null) {
-            likedBy = new HashSet<>();
+    public void addLike(Like like) {
+        if (likes == null) {
+            likes = new ArrayList<>();
         }
-        likedBy.add(personLiked);
+        likes.add(like);
     }
 
     public void addAudio(Audio audio) {
@@ -158,5 +164,21 @@ public class Post implements Serializable {
                 ", author=" + author +
                 (parent != null ? ", parent=" + parent : "") +
                 '}';
+    }
+
+    public void persistRecursive(SessionFactory sessionFactory) {
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+        _persist(session);
+        tx.commit();
+        session.close();
+    }
+
+    private void _persist(Session session) {
+        if (this.getRepostOf() != null) {
+            this.getRepostOf()._persist(session);
+        }
+        session.saveOrUpdate(this.getAuthor());
+        session.saveOrUpdate(this);
     }
 }

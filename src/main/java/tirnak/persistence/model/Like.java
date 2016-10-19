@@ -17,7 +17,7 @@ public class Like implements Serializable {
     @ManyToOne
     @JoinColumn(name="person_href")
     @PrimaryKeyJoinColumn
-    private Person author;
+    private Person owner;
 
     @Column(name="is_repost")
     private boolean isReposted;
@@ -30,17 +30,25 @@ public class Like implements Serializable {
         Like like = (Like) o;
 
         if (isReposted != like.isReposted) return false;
-        if (author != null ? !author.equals(like.author) : like.author != null) return false;
         if (post != null ? !post.equals(like.post) : like.post != null) return false;
+        return !(owner != null ? !owner.equals(like.owner) : like.owner != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
         int result = post != null ? post.hashCode() : 0;
-        result = 31 * result + (author != null ? author.hashCode() : 0);
+        result = 31 * result + (owner != null ? owner.hashCode() : 0);
         result = 31 * result + (isReposted ? 1 : 0);
         return result;
     }
+
+    public Person getOwner() {
+        return owner;
+    }
+
+    public void setIsReposted(boolean isReposted) {
+        this.isReposted = isReposted;
+    }
+
 }

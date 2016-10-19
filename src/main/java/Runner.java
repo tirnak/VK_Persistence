@@ -31,7 +31,7 @@ public class Runner {
         URL filePath = Runner.class.getResource("credentials.properties");
         oAuthorizer = new VkOAuthorizer(properties, filePath);
 
-        System.setProperty("webdriver.firefox.marionette", properties.getProperty("path_to_driver"));
+        System.setProperty("webdriver.gecko.driver", properties.getProperty("path_to_driver"));
         DesiredCapabilities capabilities = DesiredCapabilities.firefox();
         capabilities.setCapability("marionette", true);
         WebDriver driver = new FirefoxDriver(capabilities);
@@ -59,21 +59,15 @@ public class Runner {
         List<Post> posts = Collections.singletonList(
                 wallExtractor.parsePost(wallExtractor.getPostDivs().get(0)));
 
-        persistPosts(sessionFactory, posts);
+        posts.forEach(p -> p.persistRecursive(sessionFactory));
 
         posts = getPosts(sessionFactory);
 
 
         Thread.sleep(1000);
 //            makeFriendsRequest();
+        driver.close();
 
-    }
-
-    private static void persistPosts(SessionFactory sessionFactory, List<Post> posts) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        posts.forEach(session::saveOrUpdate);
-        session.close();
     }
 
     private static List<Post> getPosts(SessionFactory sessionFactory) {

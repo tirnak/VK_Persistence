@@ -2,22 +2,25 @@ package tirnak.persistence.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="person")
 public class Person implements Serializable {
+
     @Id
     @Column(name = "person_href")
     private String href;
 
-
     @Column(name = "full_name")
     private String fullName;
 
-    @ManyToMany(cascade=CascadeType.PERSIST, mappedBy="likedBy", targetEntity = Post.class)
-    public Set<Post> likes;
+    @OneToMany(mappedBy = "author", cascade = CascadeType.PERSIST)
+    private List<Post> posts;
+
+    @OneToMany(cascade=CascadeType.PERSIST, mappedBy="owner")
+    public List<Like> likes;
 
     public String getHref() {
         return href;
@@ -29,10 +32,10 @@ public class Person implements Serializable {
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
-    public void addLike(Post tolike) {
+    public void addLike(Like like) {
         if (likes == null) {
-            likes = new HashSet<Post>();
+            likes = new ArrayList<>();
         }
-        this.likes.add(tolike);
+        this.likes.add(like);
     }
 }
