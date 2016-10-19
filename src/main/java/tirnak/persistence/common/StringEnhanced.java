@@ -27,6 +27,15 @@ public class StringEnhanced {
         return false;
     }
 
+    public boolean containsAllOf(String[] strings) {
+        for (String string : strings) {
+            if (s.contains(string)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean equalsOneOf(String[] strings) {
         for (String string : strings) {
             if (s.equals(string)) {

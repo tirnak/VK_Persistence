@@ -12,6 +12,7 @@ import org.springframework.social.vkontakte.api.impl.VKontakteTemplate;
 import tirnak.persistence.VkAuthorizer;
 import tirnak.persistence.VkOAuthorizer;
 import tirnak.persistence.model.Post;
+import tirnak.persistence.wall.PostDivWrapper;
 import tirnak.persistence.wall.WallExtractor;
 
 import java.io.IOException;
@@ -57,7 +58,7 @@ public class Runner {
 //        List<Post> posts = wallExtractor.getPostDivs().stream()
 //                .map(wallExtractor::parsePost).collect(Collectors.toList());
         List<Post> posts = Collections.singletonList(
-                wallExtractor.parsePost(wallExtractor.getPostDivs().get(0)));
+                wallExtractor.parsePost(PostDivWrapper.getPostDivs(driver)[0]));
 
         posts.forEach(p -> p.persistRecursive(sessionFactory));
 

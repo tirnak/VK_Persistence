@@ -14,16 +14,10 @@ import java.util.List;
 
 public class WallExtractor extends VkSeleniumGeneric {
 
-    public static final String XPATH_QUERY_CLASS_EXCEPT = "(self::div|.//*[@class!=\"copy_quote\"])/*[@class=\"{}\"]";
-    public static String getXpathQueryClassExcept(String className) {
-        return XPATH_QUERY_CLASS_EXCEPT.replace("{}", className);
-    }
-    public static final String POSTS_FROM_PAGE_QUERY = ".//*[@id=\"page_wall_posts\"]/*[starts-with(@id,\"post\")]";
     public static final String SCROLL_WALL_BUTTON_QUERY = "wall_more_link";
     public static final String EXPAND_CLASS = "wall_post_more";
 
     private long userId;
-    private SessionFactory sessionFactory;
     private DomIterator baseDomIterator;
     private DomIterator likeDomIterator;
     private DomIterator repostDomIterator;
@@ -76,39 +70,23 @@ public class WallExtractor extends VkSeleniumGeneric {
     }
 
     public Post parsePost(WebElement el) {
-        Post post = new Post();
-
-        baseDomIterator.visit(el, post);
-        showLikesOfPost(el);
-        likeDomIterator.visit(el, post);
-//        showRepostedOfPost(el);
-//        repostDomIterator.visit(el, post);
-        return post;
+        PostDivWrapper postWrapper = new PostDivWrapper(el);
+        return parsePost(postWrapper);
     }
 
-    public List<WebElement> getPostDivs() {
-        return driver.findElements(By.xpath(POSTS_FROM_PAGE_QUERY));
-    }
-
-    private void showLikesOfPost(WebElement el) {
-        String script = el.findElement(By.className("post_like")).getAttribute("onmouseover");
-        ((FirefoxDriver) driver).executeScript(script);
-        try {
-            ((FirefoxDriver) driver).executeScript("arguments[0].querySelector('.like_tt').style.display='block'", el);
-        } catch (WebDriverException e) {
-            System.out.println(el.getAttribute("id") + " has no likes");
+    public Post parsePost(PostDivWrapper postWrapper) {
+        postWrapper.iterateBy(baseDomIterator);
+        if (postWrapper.hasLikes()) {
+            postWrapper.showLikesOfPost();
+            postWrapper.iterateBy(likeDomIterator);
         }
+        if (postWrapper.hasReposts()) {
+            postWrapper.showRepostedOfPost();
+            postWrapper.iterateBy(repostDomIterator);
+        }
+        return postWrapper.getPost();
     }
 
-    private void showRepostedOfPost(WebElement el) {
-        String script = el.findElement(By.className("post_share")).getAttribute("onmouseover");
-        ((FirefoxDriver) driver).executeScript(script);
-        try {
-            ((FirefoxDriver) driver).executeScript("arguments[0].querySelector('.like_tt').style.display='block'", el);
-        } catch (WebDriverException e) {
-            System.out.println(el.getAttribute("id") + " has no likes");
-        }
-    }
 
 //    public WebElement getRepostDivs(WebElement post) {
 //        try {
