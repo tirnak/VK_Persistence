@@ -18,7 +18,7 @@ public class LikeHandler extends AbstractHandler implements Handler {
 
     @Override
     public boolean checkDom(WebElement el) {
-        return wrapString(el.getAttribute("class")).contains(LIKE_CLASS);
+        return wrapString(el.getAttribute("class")).equalsAsString(LIKE_CLASS);
     }
 
     private static final String LIKE_CLASS = "like_tt_owner";
@@ -29,8 +29,8 @@ public class LikeHandler extends AbstractHandler implements Handler {
         Like like = new Like();
         person.setHref(el.getAttribute("href"));
         person.setFullName(el.getAttribute("title"));
-        person.addLike(like);
-        currentPost.addLike(like);
+        person.addLike(like); like.setOwner(person);
+        currentPost.addLike(like); like.setPost(currentPost);
         return currentPost;
     }
 }

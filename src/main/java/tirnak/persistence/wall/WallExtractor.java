@@ -17,21 +17,22 @@ public class WallExtractor extends VkSeleniumGeneric {
     public static final String SCROLL_WALL_BUTTON_QUERY = "wall_more_link";
     public static final String EXPAND_CLASS = "wall_post_more";
 
-    private long userId;
+    private String userId;
     private DomIterator baseDomIterator;
     private DomIterator likeDomIterator;
     private DomIterator repostDomIterator;
 
-    public WallExtractor(WebDriver driver, long userId, SessionFactory sessionFactory) {
+    public WallExtractor(WebDriver driver, SessionFactory sessionFactory) {
         super(driver);
-        this.userId = userId;
+        this.userId = driver.findElement(By.id("top_profile_link")).getAttribute("href");
         baseDomIterator = new DomIterator(new BasePostHandlerContainer(sessionFactory));
         likeDomIterator = new DomIterator(new LikeHandlerContainer(sessionFactory));
         repostDomIterator = new DomIterator(new RepostHandlerContainer(sessionFactory));
     }
 
     public void goToWall() {
-        driver.navigate().to(baseUrl + "/id" + userId);
+        driver.navigate().to(
+            userId.contains("http") ? userId : baseUrl + userId);
     }
     /**
      * A method to scroll down the wall aimed to cope with lazy initialization of wall

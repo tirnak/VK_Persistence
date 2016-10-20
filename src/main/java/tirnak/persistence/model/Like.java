@@ -51,4 +51,16 @@ public class Like implements Serializable {
         this.isReposted = isReposted;
     }
 
+    public void setOwner(Person owner) {
+        this.owner = owner;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    public boolean isReposted() {
+        return isReposted;
+    }
+
 }

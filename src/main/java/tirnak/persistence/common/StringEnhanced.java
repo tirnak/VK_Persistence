@@ -45,6 +45,10 @@ public class StringEnhanced {
         return false;
     }
 
+    public boolean equalsAsString(String string) {
+        return s.equals(string);
+    }
+
     public boolean matches(String regexp) {
         return s.matches(regexp);
     }
