@@ -2,15 +2,15 @@ package tirnak.persistence.wall;
 
 import org.hibernate.SessionFactory;
 import org.openqa.selenium.*;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import tirnak.persistence.common.DomIterator;
+import tirnak.persistence.common.Repeat;
 import tirnak.persistence.common.VkSeleniumGeneric;
 import tirnak.persistence.handlers.containers.BasePostHandlerContainer;
 import tirnak.persistence.handlers.containers.LikeHandlerContainer;
 import tirnak.persistence.handlers.containers.RepostHandlerContainer;
 import tirnak.persistence.model.Post;
 
-import java.util.List;
+import java.time.Duration;
 
 public class WallExtractor extends VkSeleniumGeneric {
 
@@ -78,12 +78,16 @@ public class WallExtractor extends VkSeleniumGeneric {
     public Post parsePost(PostDivWrapper postWrapper) {
         postWrapper.iterateBy(baseDomIterator);
         if (postWrapper.hasLikes()) {
-            postWrapper.showLikesOfPost();
-            postWrapper.iterateBy(likeDomIterator);
+            Repeat.procedure(() -> {
+                postWrapper.showLikesOfPost();
+                postWrapper.iterateBy(likeDomIterator);})
+            .during(Duration.ofSeconds(10)).orUntil(postWrapper::areLikesConsistent).run();
         }
         if (postWrapper.hasReposts()) {
-            postWrapper.showRepostedOfPost();
-            postWrapper.iterateBy(repostDomIterator);
+            Repeat.procedure(() -> {
+                postWrapper.showRepostedOfPost();
+                postWrapper.iterateBy(repostDomIterator);})
+            .during(Duration.ofSeconds(10)).orUntil(postWrapper::areRepostedsConsistent).run();
         }
         return postWrapper.getPost();
     }

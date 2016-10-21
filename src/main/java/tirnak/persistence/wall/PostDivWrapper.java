@@ -86,4 +86,20 @@ public class PostDivWrapper {
             }
         }
     }
+
+    public boolean areLikesConsistent() {
+        if (post.getLikes() == null || post.getLikes().size() == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean areRepostedsConsistent() {
+        if (post.getLikes() != null && post.getLikes().stream().anyMatch(Like::isReposted)) {
+            return true;
+        } else {
+            return true;
+        }
+    }
 }
