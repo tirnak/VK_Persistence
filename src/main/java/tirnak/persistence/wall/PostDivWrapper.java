@@ -10,6 +10,11 @@ import tirnak.persistence.model.Post;
 
 import static tirnak.persistence.common.StringEnhanced.wrapString;
 
+/**
+ * Wrapper of posts DomElement
+ * Executes some lazy init of likes and reposts
+ * Validates element and checks consistency
+ */
 public class PostDivWrapper {
     public static final String POSTS_FROM_PAGE_QUERY = ".//*[@id=\"page_wall_posts\"]/*[starts-with(@id,\"post\")]";
     public static final String POST_CSS_CLASS = "_post";

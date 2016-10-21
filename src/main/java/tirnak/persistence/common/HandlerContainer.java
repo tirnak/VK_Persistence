@@ -8,9 +8,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Contains handlers and passes a SessionFactory to them to persist
+ *
+ */
 abstract public class HandlerContainer {
 
-    Set<Handler> handlers = new HashSet<>();
+    private Set<Handler> handlers = new HashSet<>();
+
+    /**
+     * Iterates handlers in order to find suitable for parsing element passed as arg
+     */
     public Optional<Handler> getParserForWebElement(WebElement el) {
         for (Handler handler : handlers) {
             if (handler.checkDom(el)) {

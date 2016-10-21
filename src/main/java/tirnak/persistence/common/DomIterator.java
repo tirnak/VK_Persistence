@@ -7,6 +7,9 @@ import tirnak.persistence.model.Post;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Iterates DomElement and its child elements with handler, contained in container
+ */
 public class DomIterator {
     private static String GET_CHILDRER_XPATH = "./*";
     private HandlerContainer handlerContainer;
@@ -26,6 +29,9 @@ public class DomIterator {
         }
     }
 
+    /**
+     * Gets children but not descendants
+     */
     private List<WebElement> getChildren(WebElement el) {
         return el.findElements(By.xpath(GET_CHILDRER_XPATH));
     }

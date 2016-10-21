@@ -12,6 +12,9 @@ import tirnak.persistence.model.Post;
 
 import java.time.Duration;
 
+/**
+ * Primary class to
+ */
 public class WallExtractor extends VkSeleniumGeneric {
 
     public static final String SCROLL_WALL_BUTTON_QUERY = "wall_more_link";
@@ -34,6 +37,7 @@ public class WallExtractor extends VkSeleniumGeneric {
         driver.navigate().to(
             userId.contains("http") ? userId : baseUrl + userId);
     }
+
     /**
      * A method to scroll down the wall aimed to cope with lazy initialization of wall
      */
@@ -46,12 +50,12 @@ public class WallExtractor extends VkSeleniumGeneric {
         }
     }
 
-    /**
-     * A method to scroll down the wall aimed to cope with lazy initialization of wall
-     */
     public void scrollDownNTimes(int times) throws InterruptedException {
         for (int i = 0; i < times; i++) {
             scrollDown();
+        }
+        for (WebElement link : driver.findElements(By.className(EXPAND_CLASS))) {
+            link.click();
         }
     }
 
@@ -59,6 +63,7 @@ public class WallExtractor extends VkSeleniumGeneric {
         try {
             driver.findElement(By.id(SCROLL_WALL_BUTTON_QUERY)).click();
         } catch (Exception ignored) {}
+
     }
 
     private boolean needsToBeLoaded() {

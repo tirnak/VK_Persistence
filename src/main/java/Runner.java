@@ -43,18 +43,13 @@ public class Runner {
         List<CompletableFuture<Void>> futurePosts = new LinkedList<>();
         for (PostDivWrapper postDivWrapper : postDivWrappers) {
             Post post = wallExtractor.parsePost(postDivWrapper);
-//            futurePosts.add(CompletableFuture.runAsync(() -> {
-                post.persistRecursive(sessionFactory);
-//            }));
+            post.persistRecursive(sessionFactory);
         }
 
-//        CompletableFuture.allOf(futurePosts.toArray(new CompletableFuture[futurePosts.size()]));
-//
         List<Post> posts = getPosts(sessionFactory);
 
 
         Thread.sleep(1000);
-//            makeFriendsRequest();
         driver.close();
 
     }
@@ -67,27 +62,5 @@ public class Runner {
         session.close();
         return result;
     }
-
-    public static void getToken(WebDriver driver) throws IOException {
-//
-//        String queryToGetCode = oAuthorizer.getQueryForCode();
-//        try {
-//            driver.navigate().to(queryToGetCode);
-//        } catch (WebDriverException e) {
-//            System.out.println("page is a lie. Exception is quite normal");
-//        }
-//        String location = driver.getCurrentUrl();
-//        oAuthorizer.parseCode(location);
-//
-//        String queryToGetToken = oAuthorizer.getQueryForToken();
-//        driver.navigate().to(queryToGetToken);
-//        String tokenResponse = driver.findElement(By.tagName("pre")).getText();
-//        ObjectMapper mapper = new ObjectMapper();
-//        JsonNode actualObj = mapper.readTree(tokenResponse);
-//        oAuthorizer.setAccessToken(actualObj.get("access_token").textValue());
-    }
-
-
-
 
 }
