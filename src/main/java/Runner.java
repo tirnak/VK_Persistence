@@ -13,9 +13,8 @@ import tirnak.persistence.wall.WallExtractor;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class Runner {
 
@@ -40,17 +39,18 @@ public class Runner {
         WallExtractor wallExtractor = new WallExtractor(driver, sessionFactory);
         wallExtractor.goToWall();
 
-//        wallExtractor.scrollToEnd();
-//        new TextPostFilter().filter((JavascriptExecutor) driver);
-//        VkImageSaver imageSaver = new VkImageSaver(driver, ".", userId);
-//        List<Post> posts = wallExtractor.getPostDivs().stream()
-//                .map(wallExtractor::parsePost).collect(Collectors.toList());
-        List<Post> posts = Collections.singletonList(
-                wallExtractor.parsePost(PostDivWrapper.getPostDivs(driver)[0]));
+        PostDivWrapper[] postDivWrappers = PostDivWrapper.getPostDivs(driver);
+        List<CompletableFuture<Void>> futurePosts = new LinkedList<>();
+        for (PostDivWrapper postDivWrapper : postDivWrappers) {
+            Post post = wallExtractor.parsePost(postDivWrapper);
+//            futurePosts.add(CompletableFuture.runAsync(() -> {
+                post.persistRecursive(sessionFactory);
+//            }));
+        }
 
-        posts.forEach(p -> p.persistRecursive(sessionFactory));
-
-        posts = getPosts(sessionFactory);
+//        CompletableFuture.allOf(futurePosts.toArray(new CompletableFuture[futurePosts.size()]));
+//
+        List<Post> posts = getPosts(sessionFactory);
 
 
         Thread.sleep(1000);
