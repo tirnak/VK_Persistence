@@ -2,6 +2,9 @@ package tirnak.persistence.common;
 
 import java.util.Optional;
 
+/**
+ * Syntactic sugar to fix possible NPEs and perform String methods on arrays.
+ */
 public class StringEnhanced {
 
     private String s;

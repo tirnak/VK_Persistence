@@ -178,7 +178,17 @@ public class Post implements Serializable {
         if (this.getRepostOf() != null) {
             this.getRepostOf()._persist(session);
         }
-        session.saveOrUpdate(this.getAuthor());
+        if (session.get(Person.class, getAuthor().getHref()) == null) {
+            session.save(getAuthor());
+        }
         session.saveOrUpdate(this);
+        if (getLikes() != null && getLikes().size() > 0) {
+            getLikes().stream().forEach(like -> {
+                if (session.get(Person.class, like.getOwner().getHref()) == null) {
+                    session.save(like.getOwner());
+                }
+                session.save(like);
+            });
+        }
     }
 }
