@@ -11,7 +11,6 @@ import java.util.function.Predicate;
  *
  */
 public class Repeat {
-    private final static int MILLISECONDS_IN_SECOND = 1000;
     private Runnable toRun;
     private Duration duration;
     private List<BooleanSupplier> conditions = new ArrayList<>();
@@ -35,6 +34,9 @@ public class Repeat {
     }
 
     public void run() {
+        if (duration == null) {
+            throw new IllegalStateException("Duration is not set");
+        }
         long timeoutMs = System.currentTimeMillis() + duration.toMillis();
         while (System.currentTimeMillis() < timeoutMs && conditions.stream().noneMatch(BooleanSupplier::getAsBoolean)) {
             toRun.run();
