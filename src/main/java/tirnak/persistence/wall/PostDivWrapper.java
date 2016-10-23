@@ -1,7 +1,7 @@
 package tirnak.persistence.wall;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.internal.WrapsDriver;
 import tirnak.persistence.common.DomIterator;
 import tirnak.persistence.model.Like;
@@ -19,7 +19,7 @@ public class PostDivWrapper {
     public static final String POST_CSS_CLASS = "_post";
     private final Post post = new Post();
     private final WebElement el;
-    private final FirefoxDriver driver;
+    private final ChromeDriver driver;
 
 
     public PostDivWrapper(WebElement postDiv) {
@@ -27,7 +27,7 @@ public class PostDivWrapper {
             throw new IllegalArgumentException("webElement must contain class '_post'");
         }
         el = postDiv;
-        driver = ((FirefoxDriver)((WrapsDriver) el).getWrappedDriver());
+        driver = ((ChromeDriver)((WrapsDriver) el).getWrappedDriver());
     }
 
     public static PostDivWrapper[] getPostDivs(WebDriver driver) {

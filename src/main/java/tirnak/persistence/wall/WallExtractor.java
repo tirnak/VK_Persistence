@@ -1,7 +1,10 @@
 package tirnak.persistence.wall;
 
 import org.hibernate.SessionFactory;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import tirnak.persistence.common.DomIterator;
 import tirnak.persistence.common.Repeat;
 import tirnak.persistence.common.VkSeleniumGeneric;
