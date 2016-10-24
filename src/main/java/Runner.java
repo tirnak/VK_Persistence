@@ -2,8 +2,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.chrome.ChromeDriver;
 import tirnak.persistence.VkAuthorizer;
 import tirnak.persistence.VkOAuthorizer;
 import tirnak.persistence.model.Like;
@@ -13,6 +12,10 @@ import tirnak.persistence.wall.WallExtractor;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -26,10 +29,8 @@ public class Runner {
         URL filePath = Runner.class.getResource("credentials.properties");
         oAuthorizer = new VkOAuthorizer(properties, filePath);
 
-        System.setProperty("webdriver.gecko.driver", properties.getProperty("path_to_driver"));
-        DesiredCapabilities capabilities = DesiredCapabilities.firefox();
-        capabilities.setCapability("marionette", true);
-        WebDriver driver = new FirefoxDriver(capabilities);
+        System.setProperty("webdriver.chrome.driver", properties.getProperty("path_to_driver"));
+        WebDriver driver = new ChromeDriver();
 
         VkAuthorizer authorizer = new VkAuthorizer(driver);
         authorizer.authorize();

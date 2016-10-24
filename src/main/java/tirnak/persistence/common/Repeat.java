@@ -3,9 +3,7 @@ package tirnak.persistence.common;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.function.BooleanSupplier;
-import java.util.function.Predicate;
 
 /**
  *
