@@ -38,4 +38,8 @@ public class Person implements Serializable {
         }
         this.likes.add(like);
     }
+
+    public String getFullName() {
+        return fullName;
+    }
 }

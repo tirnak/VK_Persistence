@@ -16,17 +16,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
-public class Runner {
+public class Saver {
 
     static VkOAuthorizer oAuthorizer;
 
     public static void main(String[] args) throws InterruptedException, IOException {
 
         Properties properties = new Properties();
-        URL filePath = Runner.class.getResource("credentials.properties");
+        URL filePath = Saver.class.getResource("credentials.properties");
         oAuthorizer = new VkOAuthorizer(properties, filePath);
 
         System.setProperty("webdriver.chrome.driver", properties.getProperty("path_to_driver"));
