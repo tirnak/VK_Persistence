@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static tirnak.persistence.common.NullObjects.returnListOrEmpty;
+import static tirnak.persistence.common.StringEnhanced.wrapString;
+
 @Entity
 @Table(name="post")
 public class Post implements Serializable {
@@ -68,7 +71,7 @@ public class Post implements Serializable {
     }
 
     public String getDate() {
-        return date;
+        return wrapString(date).toString();
     }
 
     public void setDate(String date) {
@@ -76,7 +79,7 @@ public class Post implements Serializable {
     }
 
     public String getText() {
-        return text;
+        return wrapString(text).toString();
     }
 
     public void setText(String text) {
@@ -108,7 +111,7 @@ public class Post implements Serializable {
     }
 
     public List<Post> getComments() {
-        return comments;
+        return returnListOrEmpty(comments);
     }
 
     public void setComments(List<Post> comments) {
@@ -116,7 +119,11 @@ public class Post implements Serializable {
     }
 
     public List<Like> getLikes() {
-        return likes;
+        return returnListOrEmpty(likes);
+    }
+
+    public List<Picture> getImages() {
+        return returnListOrEmpty(images);
     }
 
     public void addLike(Like like) {

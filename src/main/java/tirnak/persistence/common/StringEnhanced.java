@@ -13,6 +13,11 @@ public class StringEnhanced {
         this.s = s;
     }
 
+    @Override
+    public String toString() {
+        return s;
+    }
+
     public static StringEnhanced wrapString(String nullable) {
         return new StringEnhanced(Optional.ofNullable(nullable).orElse(NullObjects.getEmptyString()));
     }

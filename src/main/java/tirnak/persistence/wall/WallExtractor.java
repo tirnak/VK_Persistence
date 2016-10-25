@@ -87,25 +87,25 @@ public class WallExtractor extends VkSeleniumGeneric {
         postWrapper.iterateBy(baseDomIterator);
         if (postWrapper.hasLikes()) {
             long timeout = System.currentTimeMillis() + 10 * 1000;
-            while (!postWrapper.areLikesConsistent() && System.currentTimeMillis() < timeout ) {
-                postWrapper.showLikesOfPost();
-                postWrapper.iterateBy(likeDomIterator);
-            }
-//            Repeat.procedure(() -> {
+//            while (!postWrapper.areLikesConsistent() && System.currentTimeMillis() < timeout ) {
 //                postWrapper.showLikesOfPost();
-//                postWrapper.iterateBy(likeDomIterator);})
-//            .during(Duration.ofSeconds(10)).orUntil(() -> postWrapper.areLikesConsistent()).run();
+//                postWrapper.iterateBy(likeDomIterator);
+//            }
+            Repeat.procedure(() -> {
+                postWrapper.showLikesOfPost();
+                postWrapper.iterateBy(likeDomIterator);})
+            .during(Duration.ofSeconds(10)).orUntil(() -> postWrapper.areLikesConsistent()).run();
         }
         if (postWrapper.hasReposts()) {
             long timeout = System.currentTimeMillis() + 10 * 1000;
-            while (!postWrapper.areLikesConsistent() && System.currentTimeMillis() < timeout ) {
-                postWrapper.showRepostedOfPost();
-                postWrapper.iterateBy(repostDomIterator);
-            }
-//            Repeat.procedure(() -> {
+//            while (!postWrapper.areLikesConsistent() && System.currentTimeMillis() < timeout ) {
 //                postWrapper.showRepostedOfPost();
-//                postWrapper.iterateBy(repostDomIterator);})
-//            .during(Duration.ofSeconds(10)).orUntil(postWrapper::areRepostedsConsistent).run();
+//                postWrapper.iterateBy(repostDomIterator);
+//            }
+            Repeat.procedure(() -> {
+                postWrapper.showRepostedOfPost();
+                postWrapper.iterateBy(repostDomIterator);})
+            .during(Duration.ofSeconds(10)).orUntil(postWrapper::areRepostedsConsistent).run();
         }
         return postWrapper.getPost();
     }

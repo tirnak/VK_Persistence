@@ -107,11 +107,6 @@
             <resource>
                 <directory>src/main/resources</directory>
             </resource>
-
-            <resource>
-                <directory>data</directory>
-                <targetPath>data</targetPath>
-            </resource>
         </resources>
         <plugins>
             <plugin>

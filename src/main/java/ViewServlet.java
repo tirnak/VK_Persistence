@@ -1,6 +1,7 @@
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 import tirnak.persistence.model.Post;
 
 import javax.servlet.RequestDispatcher;
@@ -22,9 +23,20 @@ public class ViewServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int postsToDisplay = 0;
+        try {
+            postsToDisplay = Integer.parseInt(req.getParameter("limit"));
+        } catch (Exception ignored) {}
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        List<Post> posts = session.createQuery("from Post ").list();
+        System.out.println(System.currentTimeMillis() + ": after open session()");
+        Query query = session.createQuery(
+                "from Post as p1 where p1 NOT IN (select p2.repostOf from Post as p2 ) AND p1.parent = null"
+        );
+        if (postsToDisplay > 0 ) {
+            query.setMaxResults(postsToDisplay);
+        }
+        List<Post> posts = query.list();
+        System.out.println("there are " + posts.size() + " posts");
         req.setAttribute("posts", posts);
         RequestDispatcher dispatcher = req.getRequestDispatcher("/vk_persisted.jsp");
         dispatcher.forward(req, resp);

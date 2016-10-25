@@ -48,14 +48,13 @@ public class Saver {
         List<Post> posts = getPosts(sessionFactory);
 
 
-        Thread.sleep(1000);
+//        Thread.sleep(1000);
         driver.close();
 
     }
 
     private static List<Post> getPosts(SessionFactory sessionFactory) {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
         List<Post> result = session.createQuery("from Post ").list();
         Like[] likes = result.stream().flatMap(l -> l.getLikes().stream()).toArray(Like[]::new);
         session.close();
