@@ -10,12 +10,13 @@
 <html>
 <head>
     <title>Sample JSP Page</title>
+    <link href="styles.css" rel="stylesheet">
 </head>
 <body>
 Current date is: <%=new java.util.Date()%>
 
     <% for (Post post : posts) { %>
-        <div>
+        <div class="post">
             <div class="author"><%=post.getAuthor().getFullName()%></div>
             <div class="date"><%=post.getDate()%></div>
             <div class="text"><%=post.getText()%></div>
@@ -57,5 +58,20 @@ Current date is: <%=new java.util.Date()%>
             </div>
         </div>
     <% } %>
+
+    <style>
+        .post {
+            width: 70%;
+            margin: 10px auto;
+            border: dotted 1px lightgrey;
+        }
+        .author {
+            font-size: larger;
+        }
+        .date {
+            font-size: smaller;
+            font-style: italic;
+        }
+    </style>
 </body>
 </html>
