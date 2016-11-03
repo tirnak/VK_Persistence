@@ -13,7 +13,10 @@
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-Current date is: <%=new java.util.Date()%>
+<form method="post" action="/">
+    <textarea name="query" cols="50" rows="5"></textarea>
+    <input type="submit" value="query">
+</form>
 
     <% for (Post post : posts) { %>
         <div class="post">

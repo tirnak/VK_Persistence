@@ -1,6 +1,7 @@
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import tirnak.persistence.VkAuthorizer;
@@ -9,6 +10,7 @@ import tirnak.persistence.model.Like;
 import tirnak.persistence.model.Post;
 import tirnak.persistence.wall.PostDivWrapper;
 import tirnak.persistence.wall.WallExtractor;
+import tirnak.persistence.wall.filter.TextPostFilter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -37,6 +39,8 @@ public class Saver {
 
         WallExtractor wallExtractor = new WallExtractor(driver, sessionFactory);
         wallExtractor.goToWall();
+        wallExtractor.scrollToEnd();
+        new TextPostFilter().filter((JavascriptExecutor) driver);
 
         PostDivWrapper[] postDivWrappers = PostDivWrapper.getPostDivs(driver);
         List<CompletableFuture<Void>> futurePosts = new LinkedList<>();

@@ -27,11 +27,23 @@ public class ViewServlet extends HttpServlet {
         try {
             postsToDisplay = Integer.parseInt(req.getParameter("limit"));
         } catch (Exception ignored) {}
+        handle(req, resp, postsToDisplay,
+            "from Post p where p.author in (select max(p.author) from Post p) and p.parent = null");
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String queryS = "";
+        try {
+            queryS = req.getParameter("query");
+        } catch (Exception ignored) {}
+        handle(req, resp, 0, queryS);
+    }
+
+    private void handle(HttpServletRequest req, HttpServletResponse resp, int postsToDisplay,  String queryS) throws ServletException, IOException {
         Session session = sessionFactory.openSession();
         System.out.println(System.currentTimeMillis() + ": after open session()");
-        Query query = session.createQuery(
-                "from Post as p1 where p1 NOT IN (select p2.repostOf from Post as p2 ) AND p1.parent = null"
-        );
+        Query query = session.createQuery(queryS);
         if (postsToDisplay > 0 ) {
             query.setMaxResults(postsToDisplay);
         }
