@@ -7,6 +7,11 @@ import tirnak.persistence.common.DomIterator;
 import tirnak.persistence.model.Like;
 import tirnak.persistence.model.Post;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Supplier;
+
 import static tirnak.persistence.common.StringEnhanced.wrapString;
 
 /**
@@ -18,21 +23,31 @@ public class PostDivWrapper {
     public static final String POSTS_FROM_PAGE_QUERY = ".//*[@id=\"page_wall_posts\"]/*[starts-with(@id,\"post\")]";
     public static final String POST_CSS_CLASS = "_post";
     private final Post post = new Post();
-    private final WebElement el;
+    private final Supplier<WebElement> elSupplier;
     private final ChromeDriver driver;
 
 
-    public PostDivWrapper(WebElement postDiv) {
-        if (!wrapString(postDiv.getAttribute("class")).contains(POST_CSS_CLASS)) {
+    public PostDivWrapper(Supplier<WebElement> supplier) {
+        elSupplier = supplier;
+        driver = ((ChromeDriver)((WrapsDriver) elSupplier.get()).getWrappedDriver());
+        if (!wrapString(elSupplier.get().getAttribute("class")).contains(POST_CSS_CLASS)) {
             throw new IllegalArgumentException("webElement must contain class '_post'");
         }
-        el = postDiv;
-        driver = ((ChromeDriver)((WrapsDriver) el).getWrappedDriver());
     }
 
-    public static PostDivWrapper[] getPostDivs(WebDriver driver) {
-        return driver.findElements(By.xpath(POSTS_FROM_PAGE_QUERY))
-            .stream().map(PostDivWrapper::new).toArray(PostDivWrapper[]::new);
+    public static Collection<PostDivWrapper> getPostDivs(WebDriver driver) {
+        List<PostDivWrapper> elements = new ArrayList<>();
+        List<Supplier<WebElement>> suppliers = new ArrayList<>();
+        try {
+            driver.findElements(By.xpath(POSTS_FROM_PAGE_QUERY)).forEach(_el -> {
+                String id = _el.getAttribute("id");
+                suppliers.add(() -> driver.findElement(By.id(id)));
+            });
+        } catch (Exception ignored) {}
+        for (Supplier s : suppliers) {
+            elements.add(new PostDivWrapper(s));
+        }
+        return elements;
     }
 
     public boolean hasLikes() {
@@ -45,7 +60,7 @@ public class PostDivWrapper {
 
     private boolean elementWithClassContainsPositiveNumber(String cssClass) {
         try {
-            String likeCount = el.findElement(By.className(cssClass)).getText();
+            String likeCount = elSupplier.get().findElement(By.className(cssClass)).getText();
             return Integer.parseInt(likeCount) > 0;
         } catch (NoSuchElementException | NumberFormatException e) {
             return false;
@@ -61,17 +76,17 @@ public class PostDivWrapper {
     }
 
     private void showLazyOf(String cssClassOfInitiator) {
-        String script = el.findElement(By.className(cssClassOfInitiator)).getAttribute("onmouseover");
+        String script = elSupplier.get().findElement(By.className(cssClassOfInitiator)).getAttribute("onmouseover");
         driver.executeScript(script);
         try {
-            driver.executeScript("arguments[0].querySelector('.like_tt').style.display='block'", el);
+            driver.executeScript("arguments[0].querySelector('.like_tt').style.display='block'", elSupplier.get());
         } catch (WebDriverException e) {
-            System.out.println(el.getAttribute("id") + " has no likes");
+            System.out.println(elSupplier.get().getAttribute("id") + " has no likes");
         }
     }
 
     public void iterateBy(DomIterator iterator) {
-        iterator.visit(el, post);
+        iterator.visit(elSupplier.get(), post);
     }
 
     public Post getPost() {

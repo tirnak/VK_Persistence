@@ -1,10 +1,7 @@
 package tirnak.persistence.wall;
 
 import org.hibernate.SessionFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import tirnak.persistence.common.DomIterator;
 import tirnak.persistence.common.Repeat;
 import tirnak.persistence.common.VkSeleniumGeneric;
@@ -14,6 +11,9 @@ import tirnak.persistence.handlers.containers.RepostHandlerContainer;
 import tirnak.persistence.model.Post;
 
 import java.time.Duration;
+import java.time.temporal.TemporalUnit;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 /**
  * Primary class to
@@ -45,9 +45,9 @@ public class WallExtractor extends VkSeleniumGeneric {
      * A method to scroll down the wall aimed to cope with lazy initialization of wall
      */
     public void scrollToEnd() throws InterruptedException {
-        while (needsToBeLoaded()) {
-            scrollDown();
-        }
+        Repeat.procedure(this::scrollDown)
+        .during(Duration.ofMinutes(10))
+        .orUntil(() -> !needsToBeLoaded()).run();
         for (WebElement link : driver.findElements(By.className(EXPAND_CLASS))) {
             link.click();
         }
@@ -58,12 +58,15 @@ public class WallExtractor extends VkSeleniumGeneric {
             scrollDown();
         }
         for (WebElement link : driver.findElements(By.className(EXPAND_CLASS))) {
-            link.click();
+            try {
+                link.click();
+            } catch (WebDriverException ignored) {}
         }
     }
 
     private void scrollDown() {
         try {
+
             driver.findElement(By.id(SCROLL_WALL_BUTTON_QUERY)).click();
         } catch (Exception ignored) {}
 
@@ -71,14 +74,17 @@ public class WallExtractor extends VkSeleniumGeneric {
 
     private boolean needsToBeLoaded() {
         try {
-            driver.findElement(By.id(SCROLL_WALL_BUTTON_QUERY));
-            return true;
+            WebElement el = driver.findElement(By.id(SCROLL_WALL_BUTTON_QUERY));
+            if (el.isDisplayed()) {
+                return true;
+            }
         } catch (NoSuchElementException e) {
+        } finally {
             return false;
         }
     }
 
-    public Post parsePost(WebElement el) {
+    public Post parsePost(Supplier<WebElement> el) {
         PostDivWrapper postWrapper = new PostDivWrapper(el);
         return parsePost(postWrapper);
     }

@@ -17,7 +17,16 @@ public class PostTest {
 
     @Before
     public void setUp() throws Exception {
-        sessionFactory = new Configuration().configure().buildSessionFactory();
+        sessionFactory = new Configuration().configure()
+                .setProperty("hibernate.connection.driver_class", "org.hsqldb.jdbcDriver")
+                .setProperty("hibernate.connection.url", "jdbc:hsqldb:mem:mymemdb")
+                .setProperty("hibernate.connection.username", "sa")
+                .setProperty("hibernate.connection.password", "")
+                .setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect")
+                .setProperty("hbm2ddl.auto", "update").setProperty("show_sql", "true")
+                .addAnnotatedClass(Person.class).addAnnotatedClass(Picture.class).addAnnotatedClass(Post.class).addAnnotatedClass(Video.class)
+                .addAnnotatedClass(Audio.class).addAnnotatedClass(Like.class).addAnnotatedClass(Link.class)
+                .buildSessionFactory();
     }
 
     @Test
@@ -25,13 +34,10 @@ public class PostTest {
 
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        Picture picture = new Picture();
-        picture.setId("1");
-        Post post = new Post();
-        post.setId("1");
-        picture.setPost(post);
-        session.save(post);
-        session.save(picture);
+        Picture picture = new Picture(); picture.setId("test_id");
+        Person person = new Person(); person.setHref("test_id");
+        Post post = new Post(); post.setId("test_id"); post.addImage(picture);
+        picture.setPost(post); post.setAuthor(person); session.save(person); session.save(picture); session.save(post);
         session.getTransaction().commit();
         session.close();
 
@@ -39,29 +45,30 @@ public class PostTest {
         session.beginTransaction();
         List result = session.createQuery("from Picture").list();
         Picture picture1 = (Picture) result.get(0);
-        assertTrue(picture1.getId().equals("1"));
-        assertTrue(picture1.getPost().getId().equals("1"));
+        assertTrue(picture1.getId().equals("test_id"));
+        assertTrue(picture1.getPost().getId().equals("test_id"));
     }
 
     @Test
     public void testLike() throws Exception {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        Post post = new Post(); post.setId("10"); session.save(post);
-        Person person = new Person(); person.setHref("11"); session.save(person);
+        Person person = new Person(); person.setHref("test_id2"); session.save(person);
+        Post post = new Post(); post.setId("test_id2"); session.save(post);
         Like like = new Like();
         person.addLike(like); post.addLike(like);
+        like.setOwner(person); like.setPost(post);session.save(like);
         session.getTransaction().commit();
         session.close();
 
         session = sessionFactory.openSession();
         session.beginTransaction();
-        List result = session.createQuery("from Post ").list();
+        List result = session.createQuery("from Post p where p.id = 'test_id2'").list();
         Post post1 = (Post) result.get(0);
-        assertTrue(post1.getId().equals("10"));
+        assertTrue(post1.getId().equals("test_id2"));
         Person[] likedBy = post1.getLikes().stream().map(Like::getOwner).toArray(Person[]::new);
         for (Person person1 : likedBy) {
-            assertTrue(person1.getHref().equals("11"));
+            assertTrue(person1.getHref().equals("test_id2"));
         }
         session.close();
     }

@@ -51,8 +51,9 @@
             <div class="comments">
                 <% for (Post comment : post.getComments()) { %>
                     <div class="comment">
-                        <div class="author"><%=comment.getAuthor()%></div>
+                        <div class="author"><%=comment.getAuthor().getFullName()%></div>
                         <div class="date"><%=comment.getDate()%></div>
+                        <div class="text"><%=comment.getText()%></div>
                         <% for (Picture pic : comment.getImages()) { %>
                             <img src="<%=pic.getHref()%>">
                         <% } %>
@@ -66,6 +67,13 @@
         .post {
             width: 70%;
             margin: 10px auto;
+            padding: 5px;
+            border: solid 1px lightgrey;
+        }
+        .comment {
+            width: 60%;
+            margin: 10px auto;
+            padding: 5px;
             border: dotted 1px lightgrey;
         }
         .author {

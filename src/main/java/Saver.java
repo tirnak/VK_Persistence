@@ -14,6 +14,7 @@ import tirnak.persistence.wall.filter.TextPostFilter;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -39,17 +40,34 @@ public class Saver {
 
         WallExtractor wallExtractor = new WallExtractor(driver, sessionFactory);
         wallExtractor.goToWall();
-        wallExtractor.scrollToEnd();
+        wallExtractor.scrollDownNTimes(20);
+//        System.out.println("scrolled down 20 times");
+//        new TextPostFilter().filter((JavascriptExecutor) driver);
+//        System.out.println("filtered +20 scrolls");
+//        wallExtractor.scrollDownNTimes(20);
+//        System.out.println("scrolled down 40 times");
+//        new TextPostFilter().filter((JavascriptExecutor) driver);
+//        System.out.println("filtered +40 scrolls");
+//        wallExtractor.scrollDownNTimes(20);
+        System.out.println("scrolled down 20 times");
         new TextPostFilter().filter((JavascriptExecutor) driver);
+        System.out.println("filtered +20 scrolls");
 
-        PostDivWrapper[] postDivWrappers = PostDivWrapper.getPostDivs(driver);
+//        wallExtractor.scrollToEnd();
+//        System.out.println("scrolled to end");
+//
+//        new TextPostFilter().filter((JavascriptExecutor) driver);
+//        System.out.println("filtered");
+
+        Collection<PostDivWrapper> postDivWrappers = PostDivWrapper.getPostDivs(driver);
+        System.out.println("start parsing");
         List<CompletableFuture<Void>> futurePosts = new LinkedList<>();
         for (PostDivWrapper postDivWrapper : postDivWrappers) {
             Post post = wallExtractor.parsePost(postDivWrapper);
             post.persistRecursive(sessionFactory);
         }
 
-        List<Post> posts = getPosts(sessionFactory);
+//        List<Post> posts = getPosts(sessionFactory);
 
 
 //        Thread.sleep(1000);

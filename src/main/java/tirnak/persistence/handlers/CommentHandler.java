@@ -23,6 +23,7 @@ public class CommentHandler extends AbstractHandler implements Handler {
     @Override
     public Post parse(WebElement el, Post currentPost) {
         Post comment = new Post();
+        comment.setId(el.getAttribute("data-post-id"));
         comment.setParent(currentPost);
         currentPost.addComment(comment);
         return comment;

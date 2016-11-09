@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -25,7 +26,8 @@ public class Post implements Serializable {
     @Column(name = "date")
     private String date;
 
-    @Column(name = "text")
+    @Column(name = "text", length = 10000)
+    @Type(type = "org.hibernate.type.NTextType")
     private String text;
 
     @OneToOne(cascade = CascadeType.PERSIST)
@@ -189,13 +191,14 @@ public class Post implements Serializable {
             session.save(getAuthor());
         }
         session.saveOrUpdate(this);
-        if (getLikes() != null && getLikes().size() > 0) {
-            getLikes().stream().forEach(like -> {
-                if (session.get(Person.class, like.getOwner().getHref()) == null) {
-                    session.save(like.getOwner());
-                }
-                session.save(like);
-            });
+        getLikes().stream().forEach(like -> {
+            if (session.get(Person.class, like.getOwner().getHref()) == null) {
+                session.save(like.getOwner());
+            }
+            session.save(like);
+        });
+        for (Post comment : this.getComments()) {
+            comment._persist(session);
         }
     }
 }
